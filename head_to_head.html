@@ -22,17 +22,23 @@
         <p class="h2h-intro">Compare two players across every recorded OoT bingo race.</p>
 
         <section class="h2h-controls" aria-label="Player comparison controls">
-            <div class="h2h-player-select">
+            <div class="h2h-player-select h2h-autocomplete" data-player="one">
                 <label for="player-one">Player 1</label>
-                <select id="player-one">
-                    <option value="">Select a player...</option>
-                </select>
+                <div class="h2h-input-wrap">
+                    <input id="player-one" type="text" placeholder="Search players..." autocomplete="off"
+                        role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="player-one-options">
+                    <button type="button" class="h2h-clear" aria-label="Clear Player 1" title="Clear">×</button>
+                </div>
+                <ul id="player-one-options" class="h2h-suggestions" role="listbox" hidden></ul>
             </div>
-            <div class="h2h-player-select">
+            <div class="h2h-player-select h2h-autocomplete" data-player="two">
                 <label for="player-two">Player 2</label>
-                <select id="player-two">
-                    <option value="">Select a player...</option>
-                </select>
+                <div class="h2h-input-wrap">
+                    <input id="player-two" type="text" placeholder="Search players..." autocomplete="off"
+                        role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="player-two-options">
+                    <button type="button" class="h2h-clear" aria-label="Clear Player 2" title="Clear">×</button>
+                </div>
+                <ul id="player-two-options" class="h2h-suggestions" role="listbox" hidden></ul>
             </div>
             <label class="h2h-checkbox" for="normal-only">
                 <input type="checkbox" id="normal-only">
