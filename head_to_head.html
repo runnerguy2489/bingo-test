@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Head-to-Head | OoT Bingo Stats</title>
+</head>
+<body>
+    <header>
+        <h1>Ocarina of Time Bingo Statistics</h1>
+        <p>Historical race data, player statistics, and records.</p>
+        <nav class="site-nav" aria-label="Main navigation">
+            <a href="index.html">Monthly Races</a>
+            <a href="overall_stats.html">Overall Stats</a>
+            <a href="head_to_head.html" class="active" aria-current="page">Head-to-Head</a>
+        </nav>
+    </header>
+
+    <main>
+        <h2>Player Head-to-Head</h2>
+        <p class="h2h-intro">Compare two players across every recorded OoT bingo race.</p>
+
+        <section class="h2h-controls" aria-label="Player comparison controls">
+            <div class="h2h-player-select">
+                <label for="player-one">Player 1</label>
+                <select id="player-one">
+                    <option value="">Select a player...</option>
+                </select>
+            </div>
+            <div class="h2h-player-select">
+                <label for="player-two">Player 2</label>
+                <select id="player-two">
+                    <option value="">Select a player...</option>
+                </select>
+            </div>
+            <label class="h2h-checkbox" for="normal-only">
+                <input type="checkbox" id="normal-only">
+                <span>Only include normal bingo races</span>
+            </label>
+        </section>
+
+        <div id="h2h-status" class="stats-message" aria-live="polite">Loading race data...</div>
+        <section id="h2h-results" aria-live="polite"></section>
+    </main>
+
+    <script src="head_to_head.js"></script>
+</body>
+</html>
