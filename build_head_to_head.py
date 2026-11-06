@@ -15,10 +15,16 @@ def build_head_to_head(input_file, output_file):
     compact_races = []
     unique_players = set()
     player_result_count = 0
+    skipped_races = 0
 
-    print(f"Processing {len(source_races):,} races...")
+    print(f"Checking {len(source_races):,} races...")
 
     for race in source_races:
+
+        # Only include normal bingo races
+        if race.get("type") != "normal":
+            skipped_races += 1
+            continue
 
         compact_players = []
 
@@ -57,6 +63,7 @@ def build_head_to_head(input_file, output_file):
     output_data = {
         "schemaVersion": 1,
         "source": os.path.basename(input_file),
+        "raceType": "normal",
         "raceCount": len(compact_races),
         "playerResultCount": player_result_count,
         "uniquePlayerCount": len(player_list),
@@ -78,7 +85,9 @@ def build_head_to_head(input_file, output_file):
     output_size = os.path.getsize(output_file) / (1024 * 1024)
 
     print("\n========== CONVERSION COMPLETE ==========")
-    print(f"Races processed:       {len(compact_races):,}")
+    print(f"Source races:          {len(source_races):,}")
+    print(f"Skipped non-normal:    {skipped_races:,}")
+    print(f"Normal races:          {len(compact_races):,}")
     print(f"Player results:        {player_result_count:,}")
     print(f"Unique players:        {len(player_list):,}")
     print(f"Output file size:      {output_size:.2f} MB")
@@ -88,7 +97,7 @@ def build_head_to_head(input_file, output_file):
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(
-        description="Build compact head-to-head bingo race data."
+        description="Build compact normal-bingo head-to-head race data."
     )
 
     parser.add_argument(
