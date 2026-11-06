@@ -1,0 +1,606 @@
+{
+  "totalRaces": 8319,
+  "source": "bingo_races_fixed.json",
+  "years": {
+    "2021": [
+      {
+        "month": "January",
+        "count": 0
+      },
+      {
+        "month": "February",
+        "count": 0
+      },
+      {
+        "month": "March",
+        "count": 1
+      },
+      {
+        "month": "April",
+        "count": 1
+      },
+      {
+        "month": "May",
+        "count": 2
+      },
+      {
+        "month": "June",
+        "count": 4
+      },
+      {
+        "month": "July",
+        "count": 2
+      },
+      {
+        "month": "August",
+        "count": 0
+      },
+      {
+        "month": "September",
+        "count": 0
+      },
+      {
+        "month": "October",
+        "count": 0
+      },
+      {
+        "month": "November",
+        "count": 0
+      },
+      {
+        "month": "December",
+        "count": 1
+      }
+    ],
+    "2020": [
+      {
+        "month": "January",
+        "count": 11
+      },
+      {
+        "month": "February",
+        "count": 9
+      },
+      {
+        "month": "March",
+        "count": 23
+      },
+      {
+        "month": "April",
+        "count": 34
+      },
+      {
+        "month": "May",
+        "count": 15
+      },
+      {
+        "month": "June",
+        "count": 28
+      },
+      {
+        "month": "July",
+        "count": 9
+      },
+      {
+        "month": "August",
+        "count": 14
+      },
+      {
+        "month": "September",
+        "count": 11
+      },
+      {
+        "month": "October",
+        "count": 1
+      },
+      {
+        "month": "November",
+        "count": 0
+      },
+      {
+        "month": "December",
+        "count": 0
+      }
+    ],
+    "2019": [
+      {
+        "month": "January",
+        "count": 21
+      },
+      {
+        "month": "February",
+        "count": 11
+      },
+      {
+        "month": "March",
+        "count": 17
+      },
+      {
+        "month": "April",
+        "count": 24
+      },
+      {
+        "month": "May",
+        "count": 46
+      },
+      {
+        "month": "June",
+        "count": 28
+      },
+      {
+        "month": "July",
+        "count": 26
+      },
+      {
+        "month": "August",
+        "count": 24
+      },
+      {
+        "month": "September",
+        "count": 18
+      },
+      {
+        "month": "October",
+        "count": 15
+      },
+      {
+        "month": "November",
+        "count": 21
+      },
+      {
+        "month": "December",
+        "count": 12
+      }
+    ],
+    "2018": [
+      {
+        "month": "January",
+        "count": 57
+      },
+      {
+        "month": "February",
+        "count": 100
+      },
+      {
+        "month": "March",
+        "count": 148
+      },
+      {
+        "month": "April",
+        "count": 67
+      },
+      {
+        "month": "May",
+        "count": 104
+      },
+      {
+        "month": "June",
+        "count": 91
+      },
+      {
+        "month": "July",
+        "count": 77
+      },
+      {
+        "month": "August",
+        "count": 80
+      },
+      {
+        "month": "September",
+        "count": 22
+      },
+      {
+        "month": "October",
+        "count": 18
+      },
+      {
+        "month": "November",
+        "count": 23
+      },
+      {
+        "month": "December",
+        "count": 35
+      }
+    ],
+    "2017": [
+      {
+        "month": "January",
+        "count": 33
+      },
+      {
+        "month": "February",
+        "count": 23
+      },
+      {
+        "month": "March",
+        "count": 34
+      },
+      {
+        "month": "April",
+        "count": 29
+      },
+      {
+        "month": "May",
+        "count": 35
+      },
+      {
+        "month": "June",
+        "count": 39
+      },
+      {
+        "month": "July",
+        "count": 57
+      },
+      {
+        "month": "August",
+        "count": 82
+      },
+      {
+        "month": "September",
+        "count": 118
+      },
+      {
+        "month": "October",
+        "count": 96
+      },
+      {
+        "month": "November",
+        "count": 47
+      },
+      {
+        "month": "December",
+        "count": 49
+      }
+    ],
+    "2016": [
+      {
+        "month": "January",
+        "count": 52
+      },
+      {
+        "month": "February",
+        "count": 83
+      },
+      {
+        "month": "March",
+        "count": 210
+      },
+      {
+        "month": "April",
+        "count": 217
+      },
+      {
+        "month": "May",
+        "count": 124
+      },
+      {
+        "month": "June",
+        "count": 156
+      },
+      {
+        "month": "July",
+        "count": 153
+      },
+      {
+        "month": "August",
+        "count": 95
+      },
+      {
+        "month": "September",
+        "count": 55
+      },
+      {
+        "month": "October",
+        "count": 39
+      },
+      {
+        "month": "November",
+        "count": 59
+      },
+      {
+        "month": "December",
+        "count": 44
+      }
+    ],
+    "2015": [
+      {
+        "month": "January",
+        "count": 58
+      },
+      {
+        "month": "February",
+        "count": 59
+      },
+      {
+        "month": "March",
+        "count": 38
+      },
+      {
+        "month": "April",
+        "count": 39
+      },
+      {
+        "month": "May",
+        "count": 62
+      },
+      {
+        "month": "June",
+        "count": 68
+      },
+      {
+        "month": "July",
+        "count": 87
+      },
+      {
+        "month": "August",
+        "count": 42
+      },
+      {
+        "month": "September",
+        "count": 32
+      },
+      {
+        "month": "October",
+        "count": 44
+      },
+      {
+        "month": "November",
+        "count": 20
+      },
+      {
+        "month": "December",
+        "count": 15
+      }
+    ],
+    "2014": [
+      {
+        "month": "January",
+        "count": 105
+      },
+      {
+        "month": "February",
+        "count": 87
+      },
+      {
+        "month": "March",
+        "count": 93
+      },
+      {
+        "month": "April",
+        "count": 99
+      },
+      {
+        "month": "May",
+        "count": 103
+      },
+      {
+        "month": "June",
+        "count": 88
+      },
+      {
+        "month": "July",
+        "count": 192
+      },
+      {
+        "month": "August",
+        "count": 228
+      },
+      {
+        "month": "September",
+        "count": 127
+      },
+      {
+        "month": "October",
+        "count": 61
+      },
+      {
+        "month": "November",
+        "count": 62
+      },
+      {
+        "month": "December",
+        "count": 70
+      }
+    ],
+    "2013": [
+      {
+        "month": "January",
+        "count": 106
+      },
+      {
+        "month": "February",
+        "count": 131
+      },
+      {
+        "month": "March",
+        "count": 143
+      },
+      {
+        "month": "April",
+        "count": 142
+      },
+      {
+        "month": "May",
+        "count": 95
+      },
+      {
+        "month": "June",
+        "count": 210
+      },
+      {
+        "month": "July",
+        "count": 142
+      },
+      {
+        "month": "August",
+        "count": 131
+      },
+      {
+        "month": "September",
+        "count": 139
+      },
+      {
+        "month": "October",
+        "count": 116
+      },
+      {
+        "month": "November",
+        "count": 129
+      },
+      {
+        "month": "December",
+        "count": 111
+      }
+    ],
+    "2012": [
+      {
+        "month": "January",
+        "count": 69
+      },
+      {
+        "month": "February",
+        "count": 82
+      },
+      {
+        "month": "March",
+        "count": 107
+      },
+      {
+        "month": "April",
+        "count": 94
+      },
+      {
+        "month": "May",
+        "count": 129
+      },
+      {
+        "month": "June",
+        "count": 88
+      },
+      {
+        "month": "July",
+        "count": 105
+      },
+      {
+        "month": "August",
+        "count": 104
+      },
+      {
+        "month": "September",
+        "count": 93
+      },
+      {
+        "month": "October",
+        "count": 69
+      },
+      {
+        "month": "November",
+        "count": 72
+      },
+      {
+        "month": "December",
+        "count": 92
+      }
+    ],
+    "2011": [
+      {
+        "month": "January",
+        "count": 26
+      },
+      {
+        "month": "February",
+        "count": 5
+      },
+      {
+        "month": "March",
+        "count": 6
+      },
+      {
+        "month": "April",
+        "count": 17
+      },
+      {
+        "month": "May",
+        "count": 42
+      },
+      {
+        "month": "June",
+        "count": 56
+      },
+      {
+        "month": "July",
+        "count": 38
+      },
+      {
+        "month": "August",
+        "count": 30
+      },
+      {
+        "month": "September",
+        "count": 36
+      },
+      {
+        "month": "October",
+        "count": 81
+      },
+      {
+        "month": "November",
+        "count": 92
+      },
+      {
+        "month": "December",
+        "count": 92
+      }
+    ],
+    "2010": [
+      {
+        "month": "January",
+        "count": 0
+      },
+      {
+        "month": "February",
+        "count": 0
+      },
+      {
+        "month": "March",
+        "count": 0
+      },
+      {
+        "month": "April",
+        "count": 0
+      },
+      {
+        "month": "May",
+        "count": 0
+      },
+      {
+        "month": "June",
+        "count": 0
+      },
+      {
+        "month": "July",
+        "count": 0
+      },
+      {
+        "month": "August",
+        "count": 0
+      },
+      {
+        "month": "September",
+        "count": 0
+      },
+      {
+        "month": "October",
+        "count": 0
+      },
+      {
+        "month": "November",
+        "count": 28
+      },
+      {
+        "month": "December",
+        "count": 12
+      }
+    ]
+  }
+}
