@@ -533,3 +533,78 @@ h2 {
         grid-template-columns: 1fr;
     }
 }
+
+
+/* Head-to-head player autocomplete */
+.h2h-input-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+.h2h-player-select input {
+    width: 100%;
+    min-height: 42px;
+    padding: 9px 42px 9px 12px;
+    color: #eeeeee;
+    background: #303030;
+    border: 1px solid #555555;
+    border-radius: 5px;
+    font-size: 15px;
+}
+.h2h-player-select input:focus {
+    outline: 2px solid #c5a64b;
+    outline-offset: 1px;
+    border-color: #c5a64b;
+}
+.h2h-clear {
+    position: absolute;
+    right: 8px;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    color: #bbbbbb;
+    background: transparent;
+    border: 0;
+    border-radius: 4px;
+    font-size: 23px;
+    line-height: 1;
+    cursor: pointer;
+}
+.h2h-clear:hover {
+    color: #ffffff;
+    background: #484848;
+}
+.h2h-suggestions {
+    position: absolute;
+    z-index: 20;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    max-height: 280px;
+    overflow-y: auto;
+    margin: 0;
+    padding: 4px;
+    list-style: none;
+    background: #252525;
+    border: 1px solid #666666;
+    border-radius: 5px;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.45);
+}
+.h2h-suggestion,
+.h2h-no-suggestions {
+    padding: 9px 10px;
+    border-radius: 3px;
+    color: #eeeeee;
+    font-size: 14px;
+}
+.h2h-suggestion {
+    cursor: pointer;
+}
+.h2h-suggestion:hover,
+.h2h-suggestion.active {
+    color: #171717;
+    background: #c5a64b;
+}
+.h2h-no-suggestions {
+    color: #999999;
+}
