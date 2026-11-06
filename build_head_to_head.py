@@ -45,6 +45,7 @@ def build_head_to_head(input_file, output_file):
         compact_races.append({
             "raceId": race.get("raceId"),
             "date": race.get("date"),
+            "type": race.get("type"),
             "version": race.get("version"),
             "raceUrl": race.get("raceUrl"),
             "players": compact_players
