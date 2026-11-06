@@ -47,7 +47,10 @@ async function loadOverallStats() {
 
         const note = document.createElement("p");
         note.className = "stats-note";
-        note.textContent = "Completion rate is calculated from all player entries; a completion has a recorded finish time, while a forfeit has no recorded finish time.";
+        note.textContent =
+            "A completion is a player result with a recorded finish time; a forfeit has no recorded finish time. " +
+            "Average Normal Finish is calculated from all timed player results in normal races. " +
+            "Average Normal Winning Time is calculated from recorded first-place times in normal races.";
 
         const typeSection = document.createElement("section");
         typeSection.className = "race-type-section";
