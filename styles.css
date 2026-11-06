@@ -102,3 +102,51 @@ h2 {
     }
 }
 
+
+
+/* Fix monthly chart layout */
+
+.monthly-chart {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+}
+
+.month-row {
+    display: grid !important;
+    grid-template-columns: 100px minmax(0, 1fr) 50px;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+}
+
+.month-name {
+    display: block;
+    color: #cccccc;
+    font-size: 14px;
+}
+
+.bar-container {
+    display: block;
+    width: 100%;
+    height: 18px;
+    background-color: #303030;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.bar {
+    display: block;
+    height: 100%;
+    background-color: #c5a64b;
+    border-radius: 3px;
+}
+
+.race-count {
+    display: block;
+    text-align: right;
+    color: #eeeeee;
+    font-size: 14px;
+    font-weight: bold;
+}
