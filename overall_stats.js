@@ -40,7 +40,8 @@ async function loadOverallStats() {
             {
                 label: "Most Entrants in a Race",
                 value: number(data.mostEntrantsInRace),
-                detail: largestRaceDetail
+                detail: largestRaceDetail,
+                url: largestRace?.raceUrl
             },
             { label: "Completion Rate", value: percent(data.completionRate) },
             { label: "Completions", value: number(data.completions) },
@@ -50,8 +51,15 @@ async function loadOverallStats() {
         ];
 
         cards.forEach(cardData => {
-            const card = document.createElement("section");
+            const card = document.createElement(cardData.url ? "a" : "section");
             card.className = "stat-card";
+            if (cardData.url) {
+                card.classList.add("stat-card-link");
+                card.href = cardData.url;
+                card.target = "_blank";
+                card.rel = "noopener noreferrer";
+                card.setAttribute("aria-label", `${cardData.label}: ${cardData.value}. Open race results in a new tab.`);
+            }
 
             const label = document.createElement("div");
             label.className = "stat-label";
