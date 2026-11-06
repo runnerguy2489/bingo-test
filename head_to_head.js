@@ -170,10 +170,10 @@ async function loadHeadToHead() {
         const tbody = document.createElement("tbody");
         matches.forEach(match => {
             const row = document.createElement("tr");
-            let winnerName = "Tie";
-            let loserName = "—";
-            let winnerResult = null;
-            let loserResult = null;
+            let winnerName;
+            let loserName;
+            let winnerResult;
+            let loserResult;
 
             if (match.outcome === "one") {
                 winnerName = playerOne;
@@ -185,16 +185,27 @@ async function loadHeadToHead() {
                 loserName = playerOne;
                 winnerResult = match.two;
                 loserResult = match.one;
+            } else {
+                // Keep each tied player's own result details in their respective columns.
+                winnerName = "Tie";
+                loserName = "Tie";
+                winnerResult = match.one;
+                loserResult = match.two;
             }
+
+            const displayTime = result =>
+                result.timeSeconds === null || result.timeSeconds === undefined
+                    ? "forfeit"
+                    : (result.time || "—");
 
             const values = [
                 formatDate(match.race.date),
                 winnerName,
                 loserName,
-                winnerResult ? winnerResult.time : `${match.one.time} / ${match.two.time}`,
-                loserResult ? loserResult.time : "—",
-                winnerResult ? (winnerResult.rowCol || "—") : `${match.one.rowCol || "—"} / ${match.two.rowCol || "—"}`,
-                loserResult ? (loserResult.rowCol || "—") : "—",
+                displayTime(winnerResult),
+                displayTime(loserResult),
+                winnerResult.rowCol || "—",
+                loserResult.rowCol || "—",
                 match.race.type || "Unknown",
                 match.race.version || "—"
             ];
