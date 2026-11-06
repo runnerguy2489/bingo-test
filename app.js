@@ -11,19 +11,33 @@ async function loadMonthlyStats() {
 
         const data = await response.json();
 
-        // Display each year, starting with the most recent.
         const years = Object.keys(data.years).sort((a, b) => b - a);
 
-        years.forEach(year => {
+        // Create the year selection buttons.
+        const yearButtons = document.createElement("div");
+        yearButtons.className = "year-buttons";
+
+        // Container for the selected year's chart.
+        const chartContainer = document.createElement("div");
+        chartContainer.id = "year-chart";
+
+        container.appendChild(yearButtons);
+        container.appendChild(chartContainer);
+
+        function displayYear(year) {
             const months = data.years[year];
 
-            // Find the busiest month for scaling the bars.
             const maxCount = Math.max(...months.map(month => month.count));
 
-            const yearSection = document.createElement("section");
-            yearSection.className = "year-section";
+            const total = months.reduce((sum, month) => sum + month.count, 0);
 
-            yearSection.innerHTML = `
+            // Update the selected button.
+            yearButtons.querySelectorAll("button").forEach(button => {
+                button.classList.toggle("active", button.dataset.year === year);
+            });
+
+            // Build the monthly chart.
+            chartContainer.innerHTML = `
                 <h2>${year}</h2>
                 <div class="monthly-chart">
                     ${months.map(month => {
@@ -42,10 +56,26 @@ async function loadMonthlyStats() {
                         `;
                     }).join("")}
                 </div>
+                <div class="year-total">
+                    <span>Total races</span>
+                    <strong>${total.toLocaleString()}</strong>
+                </div>
             `;
+        }
 
-            container.appendChild(yearSection);
+        // Create one button for each year.
+        years.forEach(year => {
+            const button = document.createElement("button");
+
+            button.textContent = year;
+            button.dataset.year = year;
+            button.addEventListener("click", () => displayYear(year));
+
+            yearButtons.appendChild(button);
         });
+
+        // Show the most recent year initially.
+        displayYear(years[0]);
 
     } catch (error) {
         container.textContent = "Unable to load monthly race statistics.";
