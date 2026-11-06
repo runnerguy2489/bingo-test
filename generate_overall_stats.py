@@ -91,7 +91,8 @@ def generate_stats(input_file, output_file):
             "raceId": largest_race.get("raceId"),
             "seed": largest_race.get("seed"),
             "type": largest_race.get("type"),
-            "date": largest_race.get("date")
+            "date": largest_race.get("date"),
+            "raceUrl": largest_race.get("raceUrl")
         }
 
     # Normal race statistics
@@ -194,7 +195,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "input",
         nargs="?",
-        default="bingo_races_fixed.json",
+        default="bingo_races_fixed_urls.json",
         help="Input race JSON file"
     )
 
