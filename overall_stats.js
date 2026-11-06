@@ -60,7 +60,6 @@ async function loadOverallStats() {
 
         const typeList = document.createElement("div");
         typeList.className = "race-type-list";
-        const maxCount = Math.max(...data.raceTypes.map(item => item.count), 0);
 
         data.raceTypes.forEach(item => {
             const row = document.createElement("div");
@@ -70,18 +69,11 @@ async function loadOverallStats() {
             name.className = "race-type-name";
             name.textContent = item.type;
 
-            const barContainer = document.createElement("div");
-            barContainer.className = "race-type-bar-container";
-            const bar = document.createElement("div");
-            bar.className = "race-type-bar";
-            bar.style.width = maxCount > 0 ? `${(item.count / maxCount) * 100}%` : "0%";
-            barContainer.appendChild(bar);
-
             const count = document.createElement("span");
             count.className = "race-type-count";
             count.textContent = number(item.count);
 
-            row.append(name, barContainer, count);
+            row.append(name, count);
             typeList.appendChild(row);
         });
 
