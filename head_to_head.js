@@ -87,10 +87,22 @@ async function loadHeadToHead() {
         return "tie";
     }
 
-    function getSharedRow(one, two) {
-        const rowOne = String(one.rowCol || "").trim().toUpperCase().match(/^ROW\s*(\d+)$/);
-        const rowTwo = String(two.rowCol || "").trim().toUpperCase().match(/^ROW\s*(\d+)$/);
-        return rowOne && rowTwo && rowOne[1] === rowTwo[1];
+    function getSameLine(one, two) {
+        // A matching row, column, or diagonal means both players selected
+        // the same five squares. Ignore formatting differences in the source.
+        const normalizeLine = value => String(value || "")
+            .trim()
+            .toUpperCase()
+            .replace(/\s+/g, "");
+
+        const lineOne = normalizeLine(one.rowCol);
+        const lineTwo = normalizeLine(two.rowCol);
+
+        if (!lineOne || !lineTwo || lineOne === "---" || lineTwo === "---") {
+            return false;
+        }
+
+        return lineOne === lineTwo;
     }
 
     function appendSummaryCard(parent, label, value, detail) {
@@ -203,7 +215,7 @@ async function loadHeadToHead() {
         table.appendChild(tbody);
         wrapper.appendChild(table);
         section.appendChild(wrapper);
-        section.appendChild(makeElement("p", "h2h-table-note", "For a tie, both players forfeited or have the same recorded rank. Row/column values are the board selections recorded for each player."));
+        section.appendChild(makeElement("p", "h2h-table-note", "For a tie, both players forfeited or have the same recorded rank. Matching row, column, or diagonal selections mean both players chose the same five squares."));
         return section;
     }
 
@@ -270,17 +282,17 @@ async function loadHeadToHead() {
             let oneWins = 0;
             let twoWins = 0;
             let ties = 0;
-            let oneSameRowWins = 0;
-            let twoSameRowWins = 0;
+            let oneSameLineWins = 0;
+            let twoSameLineWins = 0;
 
             matches.forEach(match => {
                 if (match.outcome === "one") oneWins++;
                 else if (match.outcome === "two") twoWins++;
                 else ties++;
 
-                if (getSharedRow(match.one, match.two)) {
-                    if (match.outcome === "one") oneSameRowWins++;
-                    if (match.outcome === "two") twoSameRowWins++;
+                if (getSameLine(match.one, match.two)) {
+                    if (match.outcome === "one") oneSameLineWins++;
+                    if (match.outcome === "two") twoSameLineWins++;
                 }
             });
 
@@ -300,8 +312,8 @@ async function loadHeadToHead() {
             status.textContent = `${number(matches.length)} shared races · ${normalOnlyCheckbox.checked ? "Normal races only" : "All race types"}`;
 
             const summary = makeElement("div", "stats-grid h2h-summary-grid");
-            appendSummaryCard(summary, `${playerOne} Wins`, number(oneWins), `${number(oneSameRowWins)} wins when both picked the same row`);
-            appendSummaryCard(summary, `${playerTwo} Wins`, number(twoWins), `${number(twoSameRowWins)} wins when both picked the same row`);
+            appendSummaryCard(summary, `${playerOne} Wins`, number(oneWins), `${number(oneSameLineWins)} wins when both picked the same 5-square line`);
+            appendSummaryCard(summary, `${playerTwo} Wins`, number(twoWins), `${number(twoSameLineWins)} wins when both picked the same 5-square line`);
             appendSummaryCard(summary, "Ties", number(ties), "Includes races where both players forfeited");
             appendSummaryCard(summary, "Shared Races", number(matches.length), "Races in which both players participated");
             resultsContainer.appendChild(summary);
