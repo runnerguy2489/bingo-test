@@ -9,13 +9,39 @@ async function loadOverallStats() {
         const number = value => Number(value).toLocaleString();
         const percent = value => `${(value * 100).toFixed(2)}%`;
 
+        const largestRace = data.mostEntrantsRace;
+        let largestRaceDetail = "";
+
+        if (largestRace) {
+            const date = largestRace.date
+                ? new Date(`${largestRace.date}Z`).toLocaleDateString(undefined, {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                    timeZone: "UTC"
+                })
+                : "";
+
+            largestRaceDetail = [
+                largestRace.type,
+                date,
+                largestRace.raceId ? `Race #${largestRace.raceId}` : ""
+            ].filter(Boolean).join(" · ");
+        }
+
         const summary = document.createElement("div");
         summary.className = "stats-grid";
 
         const cards = [
             { label: "Bingo Races", value: number(data.totalRaces) },
             { label: "Player Entries", value: number(data.totalPlayerResults) },
+            { label: "Unique Players", value: number(data.uniquePlayers) },
             { label: "Average Entrants per Race", value: Number(data.averageEntrantsPerRace).toFixed(2) },
+            {
+                label: "Most Entrants in a Race",
+                value: number(data.mostEntrantsInRace),
+                detail: largestRaceDetail
+            },
             { label: "Completion Rate", value: percent(data.completionRate) },
             { label: "Completions", value: number(data.completions) },
             { label: "Forfeits", value: number(data.forfeits) },
