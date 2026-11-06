@@ -1,6 +1,6 @@
 async function loadHeadToHead() {
-    const playerOneSelect = document.getElementById("player-one");
-    const playerTwoSelect = document.getElementById("player-two");
+    const playerOneInput = document.getElementById("player-one");
+    const playerTwoInput = document.getElementById("player-two");
     const normalOnlyCheckbox = document.getElementById("normal-only");
     const status = document.getElementById("h2h-status");
     const resultsContainer = document.getElementById("h2h-results");
@@ -240,21 +240,119 @@ async function loadHeadToHead() {
         }
 
         const players = [...data.players].sort((a, b) => a.localeCompare(b));
-        const fragmentOne = document.createDocumentFragment();
-        const fragmentTwo = document.createDocumentFragment();
+        let selectedPlayerOne = "";
+        let selectedPlayerTwo = "";
 
-        players.forEach(username => {
-            fragmentOne.appendChild(new Option(username, username));
-            fragmentTwo.appendChild(new Option(username, username));
-        });
-        playerOneSelect.appendChild(fragmentOne);
-        playerTwoSelect.appendChild(fragmentTwo);
+        function setupAutocomplete(input, playerKey, getOtherPlayer, setSelectedPlayer) {
+            const wrapper = input.closest(".h2h-autocomplete");
+            const list = wrapper.querySelector(".h2h-suggestions");
+            const clearButton = wrapper.querySelector(".h2h-clear");
+            let activeIndex = -1;
+            let visiblePlayers = [];
 
-        status.textContent = `Loaded ${number(data.raceCount ?? data.races.length)} races and ${number(data.uniquePlayerCount ?? players.length)} players. Select two players to compare.`;
+            function closeSuggestions() {
+                list.hidden = true;
+                input.setAttribute("aria-expanded", "false");
+                input.removeAttribute("aria-activedescendant");
+                activeIndex = -1;
+            }
+
+            function renderSuggestions() {
+                const query = input.value.trim().toLocaleLowerCase();
+                const otherPlayer = getOtherPlayer();
+                visiblePlayers = players
+                    .filter(username => username !== otherPlayer &&
+                        (!query || username.toLocaleLowerCase().includes(query)))
+                    .slice(0, 12);
+                list.replaceChildren();
+                activeIndex = -1;
+
+                if (!visiblePlayers.length) {
+                    const empty = document.createElement("li");
+                    empty.className = "h2h-no-suggestions";
+                    empty.textContent = query ? "No matching players" : "No players available";
+                    empty.setAttribute("role", "option");
+                    list.appendChild(empty);
+                } else {
+                    visiblePlayers.forEach((username, index) => {
+                        const option = document.createElement("li");
+                        option.id = `${input.id}-option-${index}`;
+                        option.className = "h2h-suggestion";
+                        option.textContent = username;
+                        option.setAttribute("role", "option");
+                        option.setAttribute("aria-selected", "false");
+                        option.addEventListener("mousedown", event => event.preventDefault());
+                        option.addEventListener("click", () => choosePlayer(username));
+                        list.appendChild(option);
+                    });
+                }
+
+                list.hidden = false;
+                input.setAttribute("aria-expanded", "true");
+            }
+
+            function highlightSuggestion(index) {
+                const options = list.querySelectorAll(".h2h-suggestion");
+                if (!options.length) return;
+                activeIndex = (index + options.length) % options.length;
+                options.forEach((option, optionIndex) => {
+                    const active = optionIndex === activeIndex;
+                    option.setAttribute("aria-selected", String(active));
+                    option.classList.toggle("active", active);
+                });
+                input.setAttribute("aria-activedescendant", options[activeIndex].id);
+                options[activeIndex].scrollIntoView({ block: "nearest" });
+            }
+
+            function choosePlayer(username) {
+                setSelectedPlayer(username);
+                input.value = username;
+                closeSuggestions();
+                renderComparison();
+            }
+
+            input.addEventListener("focus", renderSuggestions);
+            input.addEventListener("input", () => {
+                setSelectedPlayer("");
+                renderSuggestions();
+                renderComparison();
+            });
+            input.addEventListener("keydown", event => {
+                if (event.key === "ArrowDown") {
+                    event.preventDefault();
+                    if (list.hidden) renderSuggestions();
+                    highlightSuggestion(activeIndex + 1);
+                } else if (event.key === "ArrowUp") {
+                    event.preventDefault();
+                    if (list.hidden) renderSuggestions();
+                    highlightSuggestion(activeIndex - 1);
+                } else if (event.key === "Enter" && !list.hidden && activeIndex >= 0) {
+                    event.preventDefault();
+                    choosePlayer(visiblePlayers[activeIndex]);
+                } else if (event.key === "Escape") {
+                    closeSuggestions();
+                }
+            });
+            clearButton.addEventListener("click", () => {
+                input.value = "";
+                setSelectedPlayer("");
+                closeSuggestions();
+                input.focus();
+                renderComparison();
+            });
+            document.addEventListener("click", event => {
+                if (!wrapper.contains(event.target)) closeSuggestions();
+            });
+        }
+
+        setupAutocomplete(playerOneInput, "one", () => selectedPlayerTwo, value => { selectedPlayerOne = value; });
+        setupAutocomplete(playerTwoInput, "two", () => selectedPlayerOne, value => { selectedPlayerTwo = value; });
+
+        status.textContent = `Loaded ${number(data.raceCount ?? data.races.length)} races and ${number(data.uniquePlayerCount ?? players.length)} players. Search for two players to compare.`;
 
         function renderComparison() {
-            const playerOne = playerOneSelect.value;
-            const playerTwo = playerTwoSelect.value;
+            const playerOne = selectedPlayerOne;
+            const playerTwo = selectedPlayerTwo;
             resultsContainer.replaceChildren();
 
             if (!playerOne || !playerTwo) {
@@ -338,8 +436,6 @@ async function loadHeadToHead() {
             resultsContainer.appendChild(renderTable(matches, playerOne, playerTwo));
         }
 
-        playerOneSelect.addEventListener("change", renderComparison);
-        playerTwoSelect.addEventListener("change", renderComparison);
         normalOnlyCheckbox.addEventListener("change", renderComparison);
     } catch (error) {
         status.textContent = "Unable to load head-to-head race data.";
