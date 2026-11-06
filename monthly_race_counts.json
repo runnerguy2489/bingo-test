@@ -1,5 +1,5 @@
 {
-  "totalRaces": 8319,
+  "totalRaces": 8325,
   "source": "bingo_races_fixed.json",
   "years": {
     "2021": [
@@ -205,11 +205,11 @@
     "2017": [
       {
         "month": "January",
-        "count": 33
+        "count": 36
       },
       {
         "month": "February",
-        "count": 23
+        "count": 26
       },
       {
         "month": "March",
