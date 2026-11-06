@@ -260,10 +260,12 @@ async function loadHeadToHead() {
             function renderSuggestions() {
                 const query = input.value.trim().toLocaleLowerCase();
                 const otherPlayer = getOtherPlayer();
-                visiblePlayers = players
+                const matchingPlayers = players
                     .filter(username => username !== otherPlayer &&
-                        (!query || username.toLocaleLowerCase().includes(query)))
-                    .slice(0, 12);
+                        (!query || username.toLocaleLowerCase().includes(query)));
+                // With an empty search, keep the complete player list available for browsing.
+                // Once the user types, limit the suggestions to the first 12 matches.
+                visiblePlayers = query ? matchingPlayers.slice(0, 12) : matchingPlayers;
                 list.replaceChildren();
                 activeIndex = -1;
 
