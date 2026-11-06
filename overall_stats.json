@@ -2,7 +2,15 @@
   "source": "bingo_races_fixed.json",
   "totalRaces": 8325,
   "totalPlayerResults": 41533,
+  "uniquePlayers": 1093,
   "averageEntrantsPerRace": 4.988948948948949,
+  "mostEntrantsInRace": 73,
+  "mostEntrantsRace": {
+    "raceId": 203214,
+    "seed": null,
+    "type": "Challenge",
+    "date": "2017-09-11T09:19"
+  },
   "completions": 33345,
   "forfeits": 8188,
   "completionRate": 0.8028555606385284,
@@ -14,17 +22,53 @@
   "averageNormalWinnerSeconds": 5096.630199526548,
   "averageNormalWinnerTime": "1:24:57",
   "raceTypes": [
-    {"type": "normal", "count": 5916},
-    {"type": "short", "count": 2148},
-    {"type": "blackout", "count": 138},
-    {"type": "child", "count": 50},
-    {"type": "double", "count": 43},
-    {"type": "anti", "count": 11},
-    {"type": "Challenge", "count": 8},
-    {"type": "Hex", "count": 6},
-    {"type": "logicless", "count": 2},
-    {"type": "adult", "count": 1},
-    {"type": "Low%", "count": 1},
-    {"type": "Rando", "count": 1}
+    {
+      "type": "normal",
+      "count": 5916
+    },
+    {
+      "type": "short",
+      "count": 2148
+    },
+    {
+      "type": "blackout",
+      "count": 138
+    },
+    {
+      "type": "child",
+      "count": 50
+    },
+    {
+      "type": "double",
+      "count": 43
+    },
+    {
+      "type": "anti",
+      "count": 11
+    },
+    {
+      "type": "Challenge",
+      "count": 8
+    },
+    {
+      "type": "Hex",
+      "count": 6
+    },
+    {
+      "type": "logicless",
+      "count": 2
+    },
+    {
+      "type": "Low%",
+      "count": 1
+    },
+    {
+      "type": "Rando",
+      "count": 1
+    },
+    {
+      "type": "adult",
+      "count": 1
+    }
   ]
 }
