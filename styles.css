@@ -150,3 +150,63 @@ h2 {
     font-size: 14px;
     font-weight: bold;
 }
+
+
+/* Year selection buttons */
+
+.year-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 25px;
+}
+
+.year-buttons button {
+    background-color: #303030;
+    color: #cccccc;
+    border: 1px solid #444444;
+    border-radius: 5px;
+    padding: 9px 16px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.year-buttons button:hover {
+    background-color: #484848;
+    color: #ffffff;
+}
+
+.year-buttons button.active {
+    background-color: #c5a64b;
+    color: #171717;
+    border-color: #c5a64b;
+}
+
+/* Selected year heading */
+
+#year-chart h2 {
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+/* Annual total */
+
+.year-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 25px;
+    padding: 15px 5px;
+    border-top: 2px solid #c5a64b;
+    font-size: 17px;
+    color: #eeeeee;
+}
+
+.year-total strong {
+    color: #d6b85c;
+    font-size: 24px;
+}
+
+
