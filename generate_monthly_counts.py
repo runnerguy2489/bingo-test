@@ -6,7 +6,7 @@ from pathlib import Path
 
 # Keep this script in the same folder as bingo_races_fixed.json.
 folder = Path(__file__).resolve().parent
-input_file = folder / "bingo_races_fixed.json"
+input_file = folder / "bingo_races_fixed_urls.json"
 output_file = folder / "monthly_race_counts.json"
 
 # Load the full race dataset.
