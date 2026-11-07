@@ -24,6 +24,67 @@ function formatTotalDuration(totalSeconds) {
 }
 
 
+// Compare numeric version components (e.g. 9.2 before 9.10).
+function compareNumericVersions(a, b) {
+    const partsA = a.split(".").map(Number);
+    const partsB = b.split(".").map(Number);
+    const length = Math.max(partsA.length, partsB.length);
+
+    for (let i = 0; i < length; i++) {
+        const valueA = partsA[i] || 0;
+        const valueB = partsB[i] || 0;
+
+        if (valueA !== valueB) {
+            return valueA - valueB;
+        }
+    }
+
+    return 0;
+}
+
+
+// Sort regular versions, then beta versions, then c1, then Unknown.
+function compareVersionLabels(a, b) {
+    function getVersionInfo(version) {
+        if (version.toLowerCase() === "c1") {
+            return { category: 2, numbers: [] };
+        }
+
+        if (version.toLowerCase() === "unknown") {
+            return { category: 3, numbers: [] };
+        }
+
+        if (version.toLowerCase().startsWith("beta")) {
+            return {
+                category: 1,
+                numbers: version.substring(4).match(/\d+/g)?.map(Number) || []
+            };
+        }
+
+        return {
+            category: 0,
+            numbers: version.match(/\d+/g)?.map(Number) || []
+        };
+    }
+
+    const versionA = getVersionInfo(a);
+    const versionB = getVersionInfo(b);
+
+    if (versionA.category !== versionB.category) {
+        return versionA.category - versionB.category;
+    }
+
+    if (versionA.category === 0 || versionA.category === 1) {
+        return compareNumericVersions(
+            versionA.numbers.join("."),
+            versionB.numbers.join(".")
+        );
+    }
+
+    return a.localeCompare(b);
+}
+
+
 async function loadOverallStats() {
     const container = document.getElementById("overall-stats");
 
@@ -139,14 +200,28 @@ async function loadOverallStats() {
             "Normal Bingo Blanks count timed player results in normal races without an associated row/column. " +
             "The V7+ blank count includes beta versions of V7 and later.";
 
-        // Helper to create a breakdown section
-        function createBreakdownSection(titleText, items, nameProperty) {
+        // Create the two breakdown buttons.
+        const tabs = document.createElement("div");
+        tabs.className = "breakdown-tabs";
+
+        const typeButton = document.createElement("button");
+        typeButton.textContent = "Races by Type";
+        typeButton.className = "active";
+        typeButton.setAttribute("aria-pressed", "true");
+
+        const versionButton = document.createElement("button");
+        versionButton.textContent = "Races by Version";
+        versionButton.setAttribute("aria-pressed", "false");
+
+        tabs.append(typeButton, versionButton);
+
+        // Create the area where the selected breakdown is displayed.
+        const breakdownContent = document.createElement("div");
+        breakdownContent.className = "breakdown-content";
+
+        function createBreakdownList(items, nameProperty) {
             const section = document.createElement("section");
             section.className = "race-type-section";
-
-            const heading = document.createElement("h3");
-            heading.textContent = titleText;
-            section.appendChild(heading);
 
             const list = document.createElement("div");
             list.className = "race-type-list";
@@ -171,23 +246,41 @@ async function loadOverallStats() {
             return section;
         }
 
-        const typeSection = createBreakdownSection(
-            "Races by Type",
-            data.raceTypes,
-            "type"
+        // Type order is already sorted by count in the JSON.
+        const typeItems = data.raceTypes || [];
+
+        // Version order is sorted numerically here, not by count.
+        const versionItems = [...(data.raceVersions || [])].sort(
+            (a, b) => compareVersionLabels(a.version, b.version)
         );
 
-        const versionSection = createBreakdownSection(
-            "Races by Version",
-            data.raceVersions,
-            "version"
-        );
+        function showBreakdown(type) {
+            const isType = type === "type";
+
+            typeButton.classList.toggle("active", isType);
+            versionButton.classList.toggle("active", !isType);
+
+            typeButton.setAttribute("aria-pressed", String(isType));
+            versionButton.setAttribute("aria-pressed", String(!isType));
+
+            const section = isType
+                ? createBreakdownList(typeItems, "type")
+                : createBreakdownList(versionItems, "version");
+
+            breakdownContent.replaceChildren(section);
+        }
+
+        typeButton.addEventListener("click", () => showBreakdown("type"));
+        versionButton.addEventListener("click", () => showBreakdown("version"));
+
+        // Default to Races by Type.
+        showBreakdown("type");
 
         container.replaceChildren(
             summary,
             note,
-            typeSection,
-            versionSection
+            tabs,
+            breakdownContent
         );
 
     } catch (error) {
