@@ -43,45 +43,35 @@ function compareNumericVersions(a, b) {
 }
 
 
-// Sort regular versions, then beta versions, then c1, then Unknown.
+// Sort regular versions, then beta versions, then c1, h1, then Unknown.
 function compareVersionLabels(a, b) {
-    function getVersionInfo(version) {
-        if (version.toLowerCase() === "c1") {
-            return { category: 2, numbers: [] };
-        }
+    const getCategory = (version) => {
+        if (version === "Unknown") return 4;
+        if (version === "h1") return 3;
+        if (version === "c1") return 2;
+        if (version.toLowerCase().startsWith("beta")) return 1;
+        return 0;
+    };
 
-        if (version.toLowerCase() === "unknown") {
-            return { category: 3, numbers: [] };
-        }
+    const categoryA = getCategory(a);
+    const categoryB = getCategory(b);
 
-        if (version.toLowerCase().startsWith("beta")) {
-            return {
-                category: 1,
-                numbers: version.substring(4).match(/\d+/g)?.map(Number) || []
-            };
-        }
-
-        return {
-            category: 0,
-            numbers: version.match(/\d+/g)?.map(Number) || []
-        };
+    if (categoryA !== categoryB) {
+        return categoryA - categoryB;
     }
 
-    const versionA = getVersionInfo(a);
-    const versionB = getVersionInfo(b);
-
-    if (versionA.category !== versionB.category) {
-        return versionA.category - versionB.category;
+    if (categoryA === 0) {
+        return compareNumericVersions(a, b);
     }
 
-    if (versionA.category === 0 || versionA.category === 1) {
+    if (categoryA === 1) {
         return compareNumericVersions(
-            versionA.numbers.join("."),
-            versionB.numbers.join(".")
+            a.replace(/^beta/i, ""),
+            b.replace(/^beta/i, "")
         );
     }
 
-    return a.localeCompare(b);
+    return 0;
 }
 
 
