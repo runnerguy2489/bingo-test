@@ -1,27 +1,26 @@
 function formatTotalDuration(totalSeconds) {
     let remaining = Math.max(0, Math.floor(Number(totalSeconds) || 0));
 
-    // Use 365 days per year.
     const units = [
-        ["year", 365 * 24 * 60 * 60],
-        ["day", 24 * 60 * 60],
-        ["hour", 60 * 60],
-        ["minute", 60],
-        ["second", 1]
+        ["y", 365 * 24 * 60 * 60],
+        ["d", 24 * 60 * 60],
+        ["h", 60 * 60],
+        ["m", 60],
+        ["s", 1]
     ];
 
     const parts = [];
 
-    units.forEach(([name, seconds]) => {
+    units.forEach(([label, seconds]) => {
         const amount = Math.floor(remaining / seconds);
 
         if (amount > 0) {
-            parts.push(`${amount} ${name}${amount !== 1 ? "s" : ""}`);
+            parts.push(`${amount}${label}`);
             remaining %= seconds;
         }
     });
 
-    return parts.length ? parts.join(", ") : "0 seconds";
+    return parts.join(" ") || "0s";
 }
 
 
