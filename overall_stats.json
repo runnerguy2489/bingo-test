@@ -1,9 +1,9 @@
 {
   "source": "bingo_races_fixed_urls.json",
-  "totalRaces": 8325,
+  "totalRaces": 8323,
   "totalPlayerResults": 41533,
   "uniquePlayers": 1093,
-  "averageEntrantsPerRace": 4.988948948948949,
+  "averageEntrantsPerRace": 4.990147783251231,
   "mostEntrantsInRace": 73,
   "mostEntrantsRace": {
     "raceId": 203214,
@@ -16,7 +16,7 @@
   "forfeits": 8188,
   "completionRate": 0.8028555606385284,
   "totalTimeSeconds": 193611159,
-  "normalRaceCount": 5916,
+  "normalRaceCount": 5914,
   "normalFinishCount": 26241,
   "averageNormalFinishSeconds": 6058.8806829008045,
   "averageNormalFinishTime": "1:40:59",
@@ -28,7 +28,7 @@
   "raceTypes": [
     {
       "type": "normal",
-      "count": 5916
+      "count": 5914
     },
     {
       "type": "short",
@@ -126,7 +126,7 @@
     },
     {
       "version": "8.2",
-      "count": 237
+      "count": 235
     },
     {
       "version": "5",
@@ -189,11 +189,11 @@
       "count": 11
     },
     {
-      "version": "Unknown",
+      "version": "beta0.9.6.3-j",
       "count": 6
     },
     {
-      "version": "beta0.9.6.3-j",
+      "version": "h1",
       "count": 6
     },
     {
