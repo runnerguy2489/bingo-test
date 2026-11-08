@@ -14,8 +14,7 @@ async function loadOverallPlayerStats() {
     ];
 
     let players = [];
-    let sortKey = "player";
-    let sortDirection = "asc";
+    let sortCriteria = [{ key: "player", direction: "asc" }];
     let currentPage = 1;
 
     const number = value => Number(value || 0).toLocaleString();
@@ -72,20 +71,28 @@ async function loadOverallPlayerStats() {
         return element;
     }
 
+    function compareByColumn(a, b, criterion) {
+        const valueA = getValue(a, criterion.key);
+        const valueB = getValue(b, criterion.key);
+        let comparison;
+        if (criterion.key === "player") {
+            comparison = String(valueA).localeCompare(String(valueB), undefined, {
+                sensitivity: "base",
+                numeric: true
+            });
+        } else {
+            comparison = Number(valueA) - Number(valueB);
+        }
+        return comparison * (criterion.direction === "asc" ? 1 : -1);
+    }
+
     function getSortedPlayers() {
         return [...players].sort((a, b) => {
-            const valueA = getValue(a, sortKey);
-            const valueB = getValue(b, sortKey);
-            let comparison;
-            if (sortKey === "player") {
-                comparison = String(valueA).localeCompare(String(valueB), undefined, {
-                    sensitivity: "base",
-                    numeric: true
-                });
-            } else {
-                comparison = Number(valueA) - Number(valueB);
+            for (const criterion of sortCriteria) {
+                const comparison = compareByColumn(a, b, criterion);
+                if (comparison !== 0) return comparison;
             }
-            return comparison * (sortDirection === "asc" ? 1 : -1);
+            return 0;
         });
     }
 
@@ -106,21 +113,34 @@ async function loadOverallPlayerStats() {
             const button = makeElement("button", "player-stats-sort", column.label);
             button.type = "button";
             button.addEventListener("click", () => {
-                if (sortKey === column.key) {
-                    sortDirection = sortDirection === "asc" ? "desc" : "asc";
+                const existingIndex = sortCriteria.findIndex(item => item.key === column.key);
+                if (existingIndex === 0) {
+                    sortCriteria[0].direction = sortCriteria[0].direction === "asc" ? "desc" : "asc";
+                } else if (existingIndex > 0) {
+                    const [existing] = sortCriteria.splice(existingIndex, 1);
+                    sortCriteria.unshift(existing);
                 } else {
-                    sortKey = column.key;
-                    sortDirection = "asc";
+                    sortCriteria.unshift({ key: column.key, direction: "asc" });
                 }
                 currentPage = 1;
                 render();
             });
 
-            if (sortKey === column.key) {
-                button.appendChild(document.createTextNode(sortDirection === "asc" ? " ▲" : " ▼"));
-                th.setAttribute("aria-sort", sortDirection === "asc" ? "ascending" : "descending");
+            const sortIndex = sortCriteria.findIndex(item => item.key === column.key);
+            if (sortIndex >= 0) {
+                const criterion = sortCriteria[sortIndex];
+                const arrow = criterion.direction === "asc" ? " ▲" : " ▼";
+                const priority = sortIndex === 0 ? "" : " " + (sortIndex + 1);
+                button.appendChild(document.createTextNode(arrow + priority));
+                if (sortIndex === 0) {
+                    th.setAttribute("aria-sort", criterion.direction === "asc" ? "ascending" : "descending");
+                } else {
+                    th.setAttribute("aria-sort", "other");
+                }
+                button.title = "Sort priority " + (sortIndex + 1) + ", " + criterion.direction + "ending";
             } else {
                 th.setAttribute("aria-sort", "none");
+                button.title = "Sort by " + column.label.replace("\n", " ");
             }
             th.appendChild(button);
             headerRow.appendChild(th);
