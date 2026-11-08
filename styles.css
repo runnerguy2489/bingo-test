@@ -700,14 +700,24 @@ h2 {
     margin: 18px 2px;
 }
 .player-stats-table-wrap {
-    margin-top: 18px;
+    margin-top: 12px;
+    overflow-x: auto;
+    position: relative;
 }
 .player-stats-table {
-    min-width: 1180px;
+    min-width: 1050px;
+    font-size: 12px;
+}
+.player-stats-table th,
+.player-stats-table td {
+    padding: 9px 10px;
 }
 .player-stats-table th {
-    white-space: nowrap;
+    white-space: normal;
 }
+.player-stats-table th:nth-child(1) { width: 160px; }
+.player-stats-table th:nth-child(2),
+.player-stats-table th:nth-child(8) { width: 78px; }
 .player-stats-sort {
     appearance: none;
     padding: 0;
@@ -717,6 +727,8 @@ h2 {
     font: inherit;
     font-weight: bold;
     text-align: left;
+    white-space: pre-line;
+    line-height: 1.2;
     cursor: pointer;
 }
 .player-stats-sort:hover {
@@ -728,6 +740,22 @@ h2 {
 }
 .player-stats-table td {
     font-variant-numeric: tabular-nums;
+}
+.player-stats-table th:first-child,
+.player-stats-table td:first-child {
+    position: sticky;
+    left: 0;
+}
+.player-stats-table th:first-child {
+    z-index: 3;
+    background: #2b2b2b;
+}
+.player-stats-table td:first-child {
+    z-index: 1;
+    background: #222222;
+}
+.player-stats-table tbody tr:hover td:first-child {
+    background: #2b2b2b;
 }
 .player-stats-name {
     color: #d6b85c;
@@ -743,16 +771,16 @@ h2 {
     align-items: center;
     justify-content: space-between;
     gap: 14px;
-    margin-top: 18px;
+    margin: 12px 0;
 }
 .player-stats-page-button {
     appearance: none;
-    padding: 9px 16px;
+    padding: 8px 14px;
     color: #cccccc;
     background: #303030;
     border: 1px solid #555555;
     border-radius: 5px;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: bold;
     cursor: pointer;
 }
@@ -766,7 +794,7 @@ h2 {
 }
 .player-stats-page-label {
     color: #bbbbbb;
-    font-size: 13px;
+    font-size: 12px;
     text-align: center;
     font-variant-numeric: tabular-nums;
 }
