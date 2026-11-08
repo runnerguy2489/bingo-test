@@ -40,6 +40,7 @@ async function loadOverallPlayerStats() {
     );
     let sortCriteria = [{ key: "completions", direction: "desc" }];
     let currentPage = 1;
+    let currentSummaryData = { raceCount: 0, playerResultCount: 0 };
 
     const number = value => Number(value || 0).toLocaleString();
     const percent = value => Number(value || 0).toFixed(2) + "%";
@@ -191,15 +192,15 @@ async function loadOverallPlayerStats() {
                 const player = getPlayer(result.username);
                 player.bingosEntered++;
 
+                if (!isValidTime(result.timeSeconds)) {
+                    player.forfeits++;
+                    return;
+                }
+
                 const rank = Number(result.rank);
                 if (rank === 1) player.wins++;
                 if (Number.isFinite(rank) && rank >= 1 && rank <= 3) {
                     player.top3Finishes++;
-                }
-
-                if (!isValidTime(result.timeSeconds)) {
-                    player.forfeits++;
-                    return;
                 }
 
                 const time = result.timeSeconds;
@@ -375,12 +376,13 @@ async function loadOverallPlayerStats() {
     }
 
     function refresh() {
-        const summaryData = calculatePlayerStats();
+        currentSummaryData = calculatePlayerStats();
         renderVersionOptions();
-        render(summaryData);
+        render();
     }
 
-    function render(summaryData) {
+    function render() {
+        const summaryData = currentSummaryData;
         const visible = getVisibleColumns();
         const sortedPlayers = getSortedPlayers();
         const totalPages = Math.max(1, Math.ceil(sortedPlayers.length / pageSize));
@@ -395,6 +397,7 @@ async function loadOverallPlayerStats() {
 
         visible.forEach(column => {
             const th = document.createElement("th");
+            th.dataset.columnKey = column.key;
             const button = makeElement("button", "player-stats-sort", column.label);
             button.type = "button";
             button.addEventListener("click", () => {
@@ -412,7 +415,7 @@ async function loadOverallPlayerStats() {
                     sortCriteria = sortCriteria.slice(0, 2);
                 }
                 currentPage = 1;
-                render(summaryData);
+                render();
             });
 
             const sortIndex = sortCriteria.findIndex(item => item.key === column.key);
@@ -469,7 +472,7 @@ async function loadOverallPlayerStats() {
             previousButton.disabled = currentPage === 1;
             previousButton.addEventListener("click", () => {
                 currentPage--;
-                render(summaryData);
+                render();
             });
 
             const nextButton = makeElement("button", "player-stats-page-button", "Next");
@@ -477,7 +480,7 @@ async function loadOverallPlayerStats() {
             nextButton.disabled = currentPage === totalPages;
             nextButton.addEventListener("click", () => {
                 currentPage++;
-                render(summaryData);
+                render();
             });
 
             const firstShown = sortedPlayers.length ? startIndex + 1 : 0;
