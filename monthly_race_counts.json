@@ -1,6 +1,6 @@
 {
-  "totalRaces": 8323,
-  "source": "bingo_races_fixed_urls.json",
+  "totalRaces": 8314,
+  "source": "bingo_races_filtered.json",
   "years": {
     "2021": [
       {
@@ -479,7 +479,7 @@
       },
       {
         "month": "July",
-        "count": 105
+        "count": 96
       },
       {
         "month": "August",
