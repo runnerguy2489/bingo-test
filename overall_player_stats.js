@@ -27,7 +27,6 @@ async function loadOverallPlayerStats() {
         { key: "worstTimeSeconds", label: "Worst Time", type: "duration", defaultVisible: false },
         { key: "medianTimeSeconds", label: "Median Time", type: "duration", defaultVisible: false },
         { key: "blanks", label: "Blanks", type: "number", defaultVisible: false },
-        { key: "blanksV7Plus", label: "Blanks V7+", type: "number", defaultVisible: false },
         { key: "snipes", label: "Snipes", type: "number", defaultVisible: false },
         { key: "sniped", label: "Sniped", type: "number", defaultVisible: false }
     ];
@@ -51,11 +50,6 @@ async function loadOverallPlayerStats() {
         value === null ||
         value === undefined ||
         (typeof value === "string" && ["", "---"].includes(value.trim()));
-
-    function isV7OrLater(version) {
-        const match = String(version ?? "").match(/\d+/);
-        return match !== null && Number(match[0]) >= 7;
-    }
 
     function formatDuration(totalSeconds) {
         if (totalSeconds === null || totalSeconds === undefined || !Number.isFinite(Number(totalSeconds))) {
@@ -171,7 +165,6 @@ async function loadOverallPlayerStats() {
                     worstTimeSeconds: null,
                     medianTimeSeconds: null,
                     blanks: 0,
-                    blanksV7Plus: 0,
                     snipes: 0,
                     sniped: 0,
                     times: []
@@ -213,9 +206,6 @@ async function loadOverallPlayerStats() {
 
                 if (isBlankRowCol(result.rowCol)) {
                     player.blanks++;
-                    if (isV7OrLater(race.version)) {
-                        player.blanksV7Plus++;
-                    }
                 }
             });
 
