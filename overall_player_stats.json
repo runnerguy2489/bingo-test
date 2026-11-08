@@ -1,0 +1,204 @@
+{
+  "source": "bingo_races_fixed_urls.json",
+  "totalRaces": 8323,
+  "totalPlayerResults": 41533,
+  "uniquePlayers": 1093,
+  "averageEntrantsPerRace": 4.990147783251231,
+  "mostEntrantsInRace": 73,
+  "mostEntrantsRace": {
+    "raceId": 203214,
+    "seed": null,
+    "type": "Challenge",
+    "date": "2017-09-11T09:19",
+    "raceUrl": "http://www.speedrunslive.com/races/result/203214"
+  },
+  "completions": 33345,
+  "forfeits": 8188,
+  "completionRate": 0.8028555606385284,
+  "totalTimeSeconds": 193611159,
+  "normalRaceCount": 5914,
+  "normalFinishCount": 26241,
+  "averageNormalFinishSeconds": 6058.8806829008045,
+  "averageNormalFinishTime": "1:40:59",
+  "normalWinnerCount": 5914,
+  "averageNormalWinnerSeconds": 5096.630199526548,
+  "averageNormalWinnerTime": "1:24:57",
+  "normalBingoBlanks": 4351,
+  "normalBingoBlanksV7Plus": 2945,
+  "raceTypes": [
+    {
+      "type": "normal",
+      "count": 5914
+    },
+    {
+      "type": "short",
+      "count": 2148
+    },
+    {
+      "type": "blackout",
+      "count": 138
+    },
+    {
+      "type": "child",
+      "count": 50
+    },
+    {
+      "type": "double",
+      "count": 43
+    },
+    {
+      "type": "anti",
+      "count": 11
+    },
+    {
+      "type": "Challenge",
+      "count": 8
+    },
+    {
+      "type": "Hex",
+      "count": 6
+    },
+    {
+      "type": "logicless",
+      "count": 2
+    },
+    {
+      "type": "Low%",
+      "count": 1
+    },
+    {
+      "type": "Rando",
+      "count": 1
+    },
+    {
+      "type": "adult",
+      "count": 1
+    }
+  ],
+  "raceVersions": [
+    {
+      "version": "9.2",
+      "count": 1192
+    },
+    {
+      "version": "6",
+      "count": 1181
+    },
+    {
+      "version": "4",
+      "count": 939
+    },
+    {
+      "version": "7.1",
+      "count": 872
+    },
+    {
+      "version": "8.4",
+      "count": 554
+    },
+    {
+      "version": "9.3",
+      "count": 503
+    },
+    {
+      "version": "8.1",
+      "count": 487
+    },
+    {
+      "version": "9",
+      "count": 430
+    },
+    {
+      "version": "8.5",
+      "count": 361
+    },
+    {
+      "version": "9.1",
+      "count": 313
+    },
+    {
+      "version": "8.3",
+      "count": 246
+    },
+    {
+      "version": "8",
+      "count": 237
+    },
+    {
+      "version": "8.2",
+      "count": 235
+    },
+    {
+      "version": "5",
+      "count": 148
+    },
+    {
+      "version": "2",
+      "count": 104
+    },
+    {
+      "version": "3",
+      "count": 100
+    },
+    {
+      "version": "9.4",
+      "count": 77
+    },
+    {
+      "version": "7",
+      "count": 51
+    },
+    {
+      "version": "c1",
+      "count": 48
+    },
+    {
+      "version": "beta0.9.5.0",
+      "count": 47
+    },
+    {
+      "version": "beta9.2",
+      "count": 46
+    },
+    {
+      "version": "1",
+      "count": 28
+    },
+    {
+      "version": "beta9.3",
+      "count": 28
+    },
+    {
+      "version": "9.5.1",
+      "count": 20
+    },
+    {
+      "version": "10",
+      "count": 19
+    },
+    {
+      "version": "beta0.9.6.0-j",
+      "count": 17
+    },
+    {
+      "version": "beta0.9.6.1-j",
+      "count": 12
+    },
+    {
+      "version": "10.1",
+      "count": 11
+    },
+    {
+      "version": "beta0.9.6.3-j",
+      "count": 6
+    },
+    {
+      "version": "h1",
+      "count": 6
+    },
+    {
+      "version": "9.5",
+      "count": 5
+    }
+  ]
+}
