@@ -3,6 +3,7 @@ async function loadOverallPlayerStats() {
     const pageSize = 100;
 
     const raceTypes = [
+        { value: "all", label: "All" },
         { value: "normal", label: "Normal" },
         { value: "blackout", label: "Blackout" },
         { value: "short", label: "Short" },
@@ -151,7 +152,8 @@ async function loadOverallPlayerStats() {
     function calculatePlayerStats() {
         const playerMap = new Map();
         const filteredRaces = raceData.filter(race =>
-            race.type === selectedType && selectedVersions.has(String(race.version))
+            (selectedType === "all" || race.type === selectedType) &&
+            selectedVersions.has(String(race.version))
         );
 
         function getPlayer(username) {
@@ -326,7 +328,7 @@ async function loadOverallPlayerStats() {
     function getVersionsForSelectedType() {
         return [...new Set(
             raceData
-                .filter(race => race.type === selectedType)
+                .filter(race => selectedType === "all" || race.type === selectedType)
                 .map(race => String(race.version))
         )].sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: "base" }));
     }
@@ -340,6 +342,7 @@ async function loadOverallPlayerStats() {
         versionOptions.replaceChildren();
 
         const versions = getVersionsForSelectedType();
+        const versionsLocked = selectedType === "all";
         const betaVersions = versions.filter(isBetaVersion);
         const regularVersions = versions.filter(version => !isBetaVersion(version));
         const allSelected = versions.length > 0 && versions.every(version => selectedVersions.has(version));
@@ -347,7 +350,8 @@ async function loadOverallPlayerStats() {
         const allLabel = makeElement("label", "player-stats-checkbox player-stats-all-versions");
         const allCheckbox = document.createElement("input");
         allCheckbox.type = "checkbox";
-        allCheckbox.checked = allSelected;
+        allCheckbox.checked = versionsLocked || allSelected;
+        allCheckbox.disabled = versionsLocked;
         allCheckbox.addEventListener("change", () => {
             selectedVersions = allCheckbox.checked ? new Set(versions) : new Set();
             currentPage = 1;
@@ -362,7 +366,8 @@ async function loadOverallPlayerStats() {
             const betaLabel = makeElement("label", "player-stats-checkbox");
             const betaCheckbox = document.createElement("input");
             betaCheckbox.type = "checkbox";
-            betaCheckbox.checked = betaVersions.every(version => selectedVersions.has(version));
+            betaCheckbox.checked = versionsLocked || betaVersions.every(version => selectedVersions.has(version));
+            betaCheckbox.disabled = versionsLocked;
             betaCheckbox.addEventListener("change", () => {
                 betaVersions.forEach(version => {
                     if (betaCheckbox.checked) {
@@ -382,7 +387,8 @@ async function loadOverallPlayerStats() {
             const label = makeElement("label", "player-stats-checkbox");
             const checkbox = document.createElement("input");
             checkbox.type = "checkbox";
-            checkbox.checked = selectedVersions.has(version);
+            checkbox.checked = versionsLocked || selectedVersions.has(version);
+            checkbox.disabled = versionsLocked;
             checkbox.addEventListener("change", () => {
                 if (checkbox.checked) {
                     selectedVersions.add(version);
