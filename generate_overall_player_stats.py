@@ -1,289 +1,176 @@
+
+#!/usr/bin/env python3
+
+"""
+Generate overall player statistics from bingo_races_fixed_urls.json.
+
+Usage:
+    python generate_overall_player_stats.py
+
+Optional:
+    python generate_overall_player_stats.py input.json output.json
+
+Statistics:
+    Bingos Entered = Every race entry for that player
+    Completions = Entries with a valid timeSeconds value
+    Forfeits = Entries without a valid timeSeconds value
+    % Complete = Completions / Bingos Entered
+    Wins = Completed entries with rank 1
+    Win % = Wins / Bingos Entered
+    Top 3 Finishes = Completed entries with rank 1, 2, or 3
+    Total Time = Sum of completed timeSeconds values
+"""
+
 import json
-import argparse
-import re
+import sys
+from collections import defaultdict
 from pathlib import Path
-from collections import Counter
-from statistics import mean
 
 
-def format_duration(seconds):
-    """Convert seconds into H:MM:SS."""
-    total_seconds = round(seconds)
-    hours = total_seconds // 3600
-    minutes = (total_seconds % 3600) // 60
-    seconds = total_seconds % 60
-
-    return f"{hours}:{minutes:02d}:{seconds:02d}"
+DEFAULT_INPUT = "bingo_races_filtered.json"
+DEFAULT_OUTPUT = "overall_player_stats.json"
 
 
-def is_valid_time(value):
-    """Check whether a time value is numeric."""
-    return isinstance(value, (int, float)) and not isinstance(value, bool)
+def is_completed(result):
+    """Check whether a player has a valid completion time."""
+    seconds = result.get("timeSeconds")
 
-
-def is_blank_row_col(value):
-    """Check whether a player result has no associated rowCol."""
     return (
-        value is None
-        or (
-            isinstance(value, str)
-            and value.strip() in ("", "---")
+        isinstance(seconds, (int, float))
+        and not isinstance(seconds, bool)
+        and seconds >= 0
+    )
+
+
+def build_player_stats(source):
+    races = source.get("races")
+
+    if not isinstance(races, list):
+        raise ValueError('Input JSON must contain a "races" list.')
+
+    stats = defaultdict(lambda: {
+        "player": "",
+        "bingosEntered": 0,
+        "completions": 0,
+        "forfeits": 0,
+        "wins": 0,
+        "top3Finishes": 0,
+        "totalTimeSeconds": 0
+    })
+
+    processed_results = 0
+
+    # Process every race and every player result.
+    for race in races:
+        for result in race.get("players", []):
+
+            username = result.get("username")
+
+            if not isinstance(username, str) or not username.strip():
+                continue
+
+            player = stats[username]
+
+            player["player"] = username
+            player["bingosEntered"] += 1
+            processed_results += 1
+
+            if is_completed(result):
+                player["completions"] += 1
+                player["totalTimeSeconds"] += result["timeSeconds"]
+
+                rank = result.get("rank")
+
+                # Only completed results count toward wins and top 3.
+                if isinstance(rank, int):
+                    if rank == 1:
+                        player["wins"] += 1
+
+                    if 1 <= rank <= 3:
+                        player["top3Finishes"] += 1
+
+            else:
+                player["forfeits"] += 1
+
+    # Calculate percentages and prepare output.
+    output_players = []
+
+    for player in stats.values():
+        entered = player["bingosEntered"]
+
+        player["completionPercent"] = round(
+            player["completions"] / entered * 100,
+            2
         )
+
+        player["winPercent"] = round(
+            player["wins"] / entered * 100,
+            2
+        )
+
+        output_players.append(player)
+
+    # Alphabetical default order.
+    output_players.sort(
+        key=lambda item: item["player"].casefold()
     )
 
-
-def is_v7_or_later(version):
-    """
-    Check whether a version is V7 or later.
-
-    This also includes beta versions, provided their base
-    version is V7 or later.
-    """
-    if version is None:
-        return False
-
-    match = re.search(r"\d+", str(version))
-
-    if not match:
-        return False
-
-    return int(match.group()) >= 7
-
-
-def generate_stats(input_file, output_file):
-    # Load the race data
-    with open(input_file, "r", encoding="utf-8") as file:
-        data = json.load(file)
-
-    races = data["races"]
-
-    # Collect all player results
-    all_players = [
-        player
-        for race in races
-        for player in race["players"]
-    ]
-
-    total_races = len(races)
-    total_player_results = len(all_players)
-
-    # Completion and forfeit statistics
-    completions = [
-        player for player in all_players
-        if is_valid_time(player.get("timeSeconds"))
-    ]
-
-    forfeits = [
-        player for player in all_players
-        if player.get("timeSeconds") is None
-    ]
-
-    completion_count = len(completions)
-    forfeit_count = len(forfeits)
-
-    completion_rate = (
-        completion_count / total_player_results
-        if total_player_results else 0
-    )
-
-    average_entrants = (
-        total_player_results / total_races
-        if total_races else 0
-    )
-
-    # Total time across all valid player finishes
-    total_time_seconds = sum(
-        player["timeSeconds"]
-        for player in completions
-    )
-
-    # Unique players
-    unique_usernames = {
-        player["username"].strip().casefold()
-        for player in all_players
-        if isinstance(player.get("username"), str)
-        and player["username"].strip()
+    return {
+        "schemaVersion": 1,
+        "source": DEFAULT_INPUT,
+        "raceCount": len(races),
+        "playerResultCount": processed_results,
+        "playerCount": len(output_players),
+        "players": output_players
     }
 
-    unique_player_count = len(unique_usernames)
 
-    # Most entrants in a single race
-    largest_race = max(
-        races,
-        key=lambda race: len(race["players"]),
-        default=None
+def main():
+
+    # Allow optional input/output filenames.
+    input_path = (
+        Path(sys.argv[1])
+        if len(sys.argv) > 1
+        else Path(DEFAULT_INPUT)
     )
 
-    most_entrants = (
-        len(largest_race["players"])
-        if largest_race else 0
+    output_path = (
+        Path(sys.argv[2])
+        if len(sys.argv) > 2
+        else Path(DEFAULT_OUTPUT)
     )
 
-    largest_race_details = None
-
-    if largest_race:
-        largest_race_details = {
-            "raceId": largest_race.get("raceId"),
-            "seed": largest_race.get("seed"),
-            "type": largest_race.get("type"),
-            "date": largest_race.get("date"),
-            "raceUrl": largest_race.get("raceUrl")
-        }
-
-    # Normal race statistics
-    normal_races = [
-        race for race in races
-        if race["type"] == "normal"
-    ]
-
-    normal_finishes = [
-        player["timeSeconds"]
-        for race in normal_races
-        for player in race["players"]
-        if is_valid_time(player.get("timeSeconds"))
-    ]
-
-    normal_winners = [
-        player["timeSeconds"]
-        for race in normal_races
-        for player in race["players"]
-        if player.get("rank") == 1
-        and is_valid_time(player.get("timeSeconds"))
-    ]
-
-    average_normal_finish = (
-        mean(normal_finishes)
-        if normal_finishes else 0
-    )
-
-    average_normal_winner = (
-        mean(normal_winners)
-        if normal_winners else 0
-    )
-
-    # Normal Bingo blank statistics
-    normal_bingo_blanks = [
-        player
-        for race in normal_races
-        for player in race["players"]
-        if is_valid_time(player.get("timeSeconds"))
-        and is_blank_row_col(player.get("rowCol"))
-    ]
-
-    # Normal Bingo blanks for V7 and later, including beta versions
-    normal_bingo_blanks_v7_plus = [
-        player
-        for race in normal_races
-        if is_v7_or_later(race.get("version"))
-        for player in race["players"]
-        if is_valid_time(player.get("timeSeconds"))
-        and is_blank_row_col(player.get("rowCol"))
-    ]
-
-    # Race type counts
-    race_type_counts = Counter(
-        race["type"] for race in races
-    )
-
-    race_types = [
-        {
-            "type": race_type,
-            "count": count
-        }
-        for race_type, count in sorted(
-            race_type_counts.items(),
-            key=lambda item: (-item[1], item[0])
+    if not input_path.exists():
+        raise FileNotFoundError(
+            f"Could not find {input_path}. "
+            "Place the input JSON in the same folder as this script "
+            "or provide its path as an argument."
         )
-    ]
 
-    # Race version counts
-    race_version_counts = Counter(
-        str(race.get("version") or "Unknown")
-        for race in races
-    )
+    print(f"Reading: {input_path}")
 
-    race_versions = [
-        {
-            "version": version,
-            "count": count
-        }
-        for version, count in sorted(
-            race_version_counts.items(),
-            key=lambda item: (-item[1], item[0])
-        )
-    ]
+    with input_path.open("r", encoding="utf-8") as file:
+        source = json.load(file)
 
-    # Build output
-    stats = {
-        "source": Path(input_file).name,
-        "totalRaces": total_races,
-        "totalPlayerResults": total_player_results,
-        "uniquePlayers": unique_player_count,
-        "averageEntrantsPerRace": average_entrants,
-        "mostEntrantsInRace": most_entrants,
-        "mostEntrantsRace": largest_race_details,
-        "completions": completion_count,
-        "forfeits": forfeit_count,
-        "completionRate": completion_rate,
-        "totalTimeSeconds": total_time_seconds,
-        "normalRaceCount": len(normal_races),
-        "normalFinishCount": len(normal_finishes),
-        "averageNormalFinishSeconds": average_normal_finish,
-        "averageNormalFinishTime": (
-            format_duration(average_normal_finish)
-            if normal_finishes else "N/A"
-        ),
-        "normalWinnerCount": len(normal_winners),
-        "averageNormalWinnerSeconds": average_normal_winner,
-        "averageNormalWinnerTime": (
-            format_duration(average_normal_winner)
-            if normal_winners else "N/A"
-        ),
-        "normalBingoBlanks": len(normal_bingo_blanks),
-        "normalBingoBlanksV7Plus": len(normal_bingo_blanks_v7_plus),
-        "raceTypes": race_types,
-        "raceVersions": race_versions
-    }
+    output = build_player_stats(source)
+    output["source"] = input_path.name
 
-    # Write JSON output
-    with open(output_file, "w", encoding="utf-8") as file:
+    with output_path.open("w", encoding="utf-8") as file:
         json.dump(
-            stats,
+            output,
             file,
-            indent=2,
-            ensure_ascii=False
+            ensure_ascii=False,
+            indent=2
         )
 
-    print("========== CONVERSION COMPLETE ==========")
-    print(f"Races: {total_races:,}")
-    print(f"Player results: {total_player_results:,}")
-    print(f"Unique players: {unique_player_count:,}")
-    print(f"Total time: {format_duration(total_time_seconds)}")
-    print(f"Normal Bingo blanks: {len(normal_bingo_blanks):,}")
-    print(f"Normal Bingo blanks (V7+): {len(normal_bingo_blanks_v7_plus):,}")
-    print(f"Most entrants in one race: {most_entrants:,}")
-    print(f"Output written to: {output_file}")
+    print()
+    print("========== OVERALL PLAYER STATS COMPLETE ==========")
+    print(f"Races processed:       {output['raceCount']:,}")
+    print(f"Player results:        {output['playerResultCount']:,}")
+    print(f"Unique players:        {output['playerCount']:,}")
+    print(f"Output file:           {output_path.resolve()}")
+    print("===================================================")
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        description="Generate overall Bingo race statistics."
-    )
-
-    parser.add_argument(
-        "input",
-        nargs="?",
-        default="bingo_races_fixed_urls.json",
-        help="Input race JSON file"
-    )
-
-    parser.add_argument(
-        "output",
-        nargs="?",
-        default="overall_player_stats.json",
-        help="Output statistics JSON file"
-    )
-
-    args = parser.parse_args()
-
-    generate_stats(args.input, args.output)
+    main()

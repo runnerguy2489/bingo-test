@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "source": "bingo_races_fixed_urls.json",
-  "raceCount": 8323,
-  "playerResultCount": 41533,
-  "playerCount": 1093,
+  "source": "bingo_races_filtered.json",
+  "raceCount": 8314,
+  "playerResultCount": 41469,
+  "playerCount": 1090,
   "players": [
     {
       "player": "_10ee",
@@ -1349,13 +1349,13 @@
     },
     {
       "player": "Chabo",
-      "bingosEntered": 12,
-      "completions": 7,
+      "bingosEntered": 9,
+      "completions": 4,
       "forfeits": 5,
       "wins": 0,
-      "top3Finishes": 1,
-      "totalTimeSeconds": 32415,
-      "completionPercent": 58.33,
+      "top3Finishes": 0,
+      "totalTimeSeconds": 30443,
+      "completionPercent": 44.44,
       "winPercent": 0.0
     },
     {
@@ -1426,13 +1426,13 @@
     },
     {
       "player": "ChocoPoptart",
-      "bingosEntered": 5,
-      "completions": 4,
+      "bingosEntered": 3,
+      "completions": 2,
       "forfeits": 1,
       "wins": 0,
-      "top3Finishes": 2,
-      "totalTimeSeconds": 8524,
-      "completionPercent": 80.0,
+      "top3Finishes": 1,
+      "totalTimeSeconds": 7741,
+      "completionPercent": 66.67,
       "winPercent": 0.0
     },
     {
@@ -3417,14 +3417,14 @@
     },
     {
       "player": "giuocob",
-      "bingosEntered": 505,
-      "completions": 364,
+      "bingosEntered": 500,
+      "completions": 359,
       "forfeits": 141,
-      "wins": 145,
-      "top3Finishes": 280,
-      "totalTimeSeconds": 1742754,
-      "completionPercent": 72.08,
-      "winPercent": 28.71
+      "wins": 143,
+      "top3Finishes": 276,
+      "totalTimeSeconds": 1740236,
+      "completionPercent": 71.8,
+      "winPercent": 28.6
     },
     {
       "player": "glint",
@@ -3604,14 +3604,14 @@
     },
     {
       "player": "Greg",
-      "bingosEntered": 71,
-      "completions": 53,
+      "bingosEntered": 70,
+      "completions": 52,
       "forfeits": 18,
       "wins": 12,
-      "top3Finishes": 31,
-      "totalTimeSeconds": 305018,
-      "completionPercent": 74.65,
-      "winPercent": 16.9
+      "top3Finishes": 30,
+      "totalTimeSeconds": 304314,
+      "completionPercent": 74.29,
+      "winPercent": 17.14
     },
     {
       "player": "Gregortixlkyns",
@@ -3659,14 +3659,14 @@
     },
     {
       "player": "guhungamanga",
-      "bingosEntered": 264,
-      "completions": 233,
+      "bingosEntered": 260,
+      "completions": 229,
       "forfeits": 31,
       "wins": 97,
-      "top3Finishes": 204,
-      "totalTimeSeconds": 838654,
-      "completionPercent": 88.26,
-      "winPercent": 36.74
+      "top3Finishes": 203,
+      "totalTimeSeconds": 836619,
+      "completionPercent": 88.08,
+      "winPercent": 37.31
     },
     {
       "player": "Gunraykilla",
@@ -3868,14 +3868,14 @@
     },
     {
       "player": "headstrong1290",
-      "bingosEntered": 75,
-      "completions": 54,
+      "bingosEntered": 71,
+      "completions": 50,
       "forfeits": 21,
-      "wins": 4,
-      "top3Finishes": 40,
-      "totalTimeSeconds": 212045,
-      "completionPercent": 72.0,
-      "winPercent": 5.33
+      "wins": 3,
+      "top3Finishes": 39,
+      "totalTimeSeconds": 210189,
+      "completionPercent": 70.42,
+      "winPercent": 4.23
     },
     {
       "player": "HeavyLink130",
@@ -4330,13 +4330,13 @@
     },
     {
       "player": "Indextic",
-      "bingosEntered": 18,
-      "completions": 12,
+      "bingosEntered": 11,
+      "completions": 5,
       "forfeits": 6,
       "wins": 0,
-      "top3Finishes": 3,
-      "totalTimeSeconds": 74079,
-      "completionPercent": 66.67,
+      "top3Finishes": 1,
+      "totalTimeSeconds": 69893,
+      "completionPercent": 45.45,
       "winPercent": 0.0
     },
     {
@@ -4495,14 +4495,14 @@
     },
     {
       "player": "IvanGS",
-      "bingosEntered": 34,
-      "completions": 33,
+      "bingosEntered": 33,
+      "completions": 32,
       "forfeits": 1,
-      "wins": 6,
-      "top3Finishes": 12,
-      "totalTimeSeconds": 221091,
-      "completionPercent": 97.06,
-      "winPercent": 17.65
+      "wins": 5,
+      "top3Finishes": 11,
+      "totalTimeSeconds": 219997,
+      "completionPercent": 96.97,
+      "winPercent": 15.15
     },
     {
       "player": "Izraill",
@@ -5067,14 +5067,14 @@
     },
     {
       "player": "keeta",
-      "bingosEntered": 44,
-      "completions": 24,
-      "forfeits": 20,
-      "wins": 3,
-      "top3Finishes": 8,
-      "totalTimeSeconds": 125841,
-      "completionPercent": 54.55,
-      "winPercent": 6.82
+      "bingosEntered": 37,
+      "completions": 18,
+      "forfeits": 19,
+      "wins": 1,
+      "top3Finishes": 5,
+      "totalTimeSeconds": 122811,
+      "completionPercent": 48.65,
+      "winPercent": 2.7
     },
     {
       "player": "Keith",
@@ -5342,14 +5342,14 @@
     },
     {
       "player": "Kosmicd12",
-      "bingosEntered": 325,
-      "completions": 285,
+      "bingosEntered": 323,
+      "completions": 283,
       "forfeits": 40,
-      "wins": 103,
-      "top3Finishes": 189,
-      "totalTimeSeconds": 1401607,
-      "completionPercent": 87.69,
-      "winPercent": 31.69
+      "wins": 101,
+      "top3Finishes": 187,
+      "totalTimeSeconds": 1400851,
+      "completionPercent": 87.62,
+      "winPercent": 31.27
     },
     {
       "player": "kpl389",
@@ -5496,13 +5496,13 @@
     },
     {
       "player": "Large_Dildo",
-      "bingosEntered": 16,
+      "bingosEntered": 14,
       "completions": 3,
-      "forfeits": 13,
+      "forfeits": 11,
       "wins": 0,
       "top3Finishes": 2,
       "totalTimeSeconds": 50988,
-      "completionPercent": 18.75,
+      "completionPercent": 21.43,
       "winPercent": 0.0
     },
     {
@@ -5733,17 +5733,6 @@
       "wins": 0,
       "top3Finishes": 0,
       "totalTimeSeconds": 7945,
-      "completionPercent": 100.0,
-      "winPercent": 0.0
-    },
-    {
-      "player": "LiteYear",
-      "bingosEntered": 1,
-      "completions": 1,
-      "forfeits": 0,
-      "wins": 0,
-      "top3Finishes": 0,
-      "totalTimeSeconds": 658,
       "completionPercent": 100.0,
       "winPercent": 0.0
     },
@@ -6145,14 +6134,14 @@
     },
     {
       "player": "Mayberg",
-      "bingosEntered": 30,
-      "completions": 27,
+      "bingosEntered": 24,
+      "completions": 21,
       "forfeits": 3,
       "wins": 1,
-      "top3Finishes": 9,
-      "totalTimeSeconds": 199450,
-      "completionPercent": 90.0,
-      "winPercent": 3.33
+      "top3Finishes": 8,
+      "totalTimeSeconds": 195950,
+      "completionPercent": 87.5,
+      "winPercent": 4.17
     },
     {
       "player": "mcmeatman",
@@ -6508,13 +6497,13 @@
     },
     {
       "player": "Mr_Carter",
-      "bingosEntered": 44,
-      "completions": 29,
+      "bingosEntered": 42,
+      "completions": 27,
       "forfeits": 15,
       "wins": 0,
-      "top3Finishes": 11,
-      "totalTimeSeconds": 210687,
-      "completionPercent": 65.91,
+      "top3Finishes": 9,
+      "totalTimeSeconds": 209538,
+      "completionPercent": 64.29,
       "winPercent": 0.0
     },
     {
@@ -7387,17 +7376,6 @@
       "winPercent": 0.0
     },
     {
-      "player": "Para",
-      "bingosEntered": 3,
-      "completions": 2,
-      "forfeits": 1,
-      "wins": 0,
-      "top3Finishes": 0,
-      "totalTimeSeconds": 1053,
-      "completionPercent": 66.67,
-      "winPercent": 0.0
-    },
-    {
       "player": "Patri75t",
       "bingosEntered": 3,
       "completions": 0,
@@ -7861,14 +7839,14 @@
     },
     {
       "player": "puchiedarcy",
-      "bingosEntered": 63,
-      "completions": 53,
+      "bingosEntered": 62,
+      "completions": 52,
       "forfeits": 10,
       "wins": 1,
-      "top3Finishes": 18,
-      "totalTimeSeconds": 374236,
-      "completionPercent": 84.13,
-      "winPercent": 1.59
+      "top3Finishes": 17,
+      "totalTimeSeconds": 372770,
+      "completionPercent": 83.87,
+      "winPercent": 1.61
     },
     {
       "player": "purplehax",
@@ -8230,17 +8208,6 @@
       "wins": 0,
       "top3Finishes": 0,
       "totalTimeSeconds": 29917,
-      "completionPercent": 100.0,
-      "winPercent": 0.0
-    },
-    {
-      "player": "RingRush",
-      "bingosEntered": 7,
-      "completions": 7,
-      "forfeits": 0,
-      "wins": 0,
-      "top3Finishes": 3,
-      "totalTimeSeconds": 4143,
       "completionPercent": 100.0,
       "winPercent": 0.0
     },
@@ -8994,14 +8961,14 @@
     },
     {
       "player": "Shredwot",
-      "bingosEntered": 29,
-      "completions": 21,
+      "bingosEntered": 26,
+      "completions": 18,
       "forfeits": 8,
-      "wins": 3,
-      "top3Finishes": 11,
-      "totalTimeSeconds": 95147,
-      "completionPercent": 72.41,
-      "winPercent": 10.34
+      "wins": 2,
+      "top3Finishes": 10,
+      "totalTimeSeconds": 93577,
+      "completionPercent": 69.23,
+      "winPercent": 7.69
     },
     {
       "player": "sicko",
@@ -11887,14 +11854,14 @@
     },
     {
       "player": "Zero",
-      "bingosEntered": 55,
-      "completions": 16,
+      "bingosEntered": 52,
+      "completions": 13,
       "forfeits": 39,
       "wins": 2,
       "top3Finishes": 7,
-      "totalTimeSeconds": 75343,
-      "completionPercent": 29.09,
-      "winPercent": 3.64
+      "totalTimeSeconds": 73483,
+      "completionPercent": 25.0,
+      "winPercent": 3.85
     },
     {
       "player": "zexick",
