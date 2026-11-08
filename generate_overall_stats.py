@@ -1,6 +1,6 @@
-
 import json
 import argparse
+import re
 from pathlib import Path
 from collections import Counter
 from statistics import mean
@@ -19,6 +19,35 @@ def format_duration(seconds):
 def is_valid_time(value):
     """Check whether a time value is numeric."""
     return isinstance(value, (int, float)) and not isinstance(value, bool)
+
+
+def is_blank_row_col(value):
+    """Check whether a player result has no associated rowCol."""
+    return (
+        value is None
+        or (
+            isinstance(value, str)
+            and value.strip() in ("", "---")
+        )
+    )
+
+
+def is_v7_or_later(version):
+    """
+    Check whether a version is V7 or later.
+
+    This also includes beta versions, provided their base
+    version is V7 or later.
+    """
+    if version is None:
+        return False
+
+    match = re.search(r"\d+", str(version))
+
+    if not match:
+        return False
+
+    return int(match.group()) >= 7
 
 
 def generate_stats(input_file, output_file):
@@ -60,6 +89,12 @@ def generate_stats(input_file, output_file):
     average_entrants = (
         total_player_results / total_races
         if total_races else 0
+    )
+
+    # Total time across all valid player finishes
+    total_time_seconds = sum(
+        player["timeSeconds"]
+        for player in completions
     )
 
     # Unique players
@@ -126,6 +161,25 @@ def generate_stats(input_file, output_file):
         if normal_winners else 0
     )
 
+    # Normal Bingo blank statistics
+    normal_bingo_blanks = [
+        player
+        for race in normal_races
+        for player in race["players"]
+        if is_valid_time(player.get("timeSeconds"))
+        and is_blank_row_col(player.get("rowCol"))
+    ]
+
+    # Normal Bingo blanks for V7 and later, including beta versions
+    normal_bingo_blanks_v7_plus = [
+        player
+        for race in normal_races
+        if is_v7_or_later(race.get("version"))
+        for player in race["players"]
+        if is_valid_time(player.get("timeSeconds"))
+        and is_blank_row_col(player.get("rowCol"))
+    ]
+
     # Race type counts
     race_type_counts = Counter(
         race["type"] for race in races
@@ -142,6 +196,23 @@ def generate_stats(input_file, output_file):
         )
     ]
 
+    # Race version counts
+    race_version_counts = Counter(
+        str(race.get("version") or "Unknown")
+        for race in races
+    )
+
+    race_versions = [
+        {
+            "version": version,
+            "count": count
+        }
+        for version, count in sorted(
+            race_version_counts.items(),
+            key=lambda item: (-item[1], item[0])
+        )
+    ]
+
     # Build output
     stats = {
         "source": Path(input_file).name,
@@ -154,6 +225,7 @@ def generate_stats(input_file, output_file):
         "completions": completion_count,
         "forfeits": forfeit_count,
         "completionRate": completion_rate,
+        "totalTimeSeconds": total_time_seconds,
         "normalRaceCount": len(normal_races),
         "normalFinishCount": len(normal_finishes),
         "averageNormalFinishSeconds": average_normal_finish,
@@ -167,7 +239,10 @@ def generate_stats(input_file, output_file):
             format_duration(average_normal_winner)
             if normal_winners else "N/A"
         ),
-        "raceTypes": race_types
+        "normalBingoBlanks": len(normal_bingo_blanks),
+        "normalBingoBlanksV7Plus": len(normal_bingo_blanks_v7_plus),
+        "raceTypes": race_types,
+        "raceVersions": race_versions
     }
 
     # Write JSON output
@@ -183,6 +258,9 @@ def generate_stats(input_file, output_file):
     print(f"Races: {total_races:,}")
     print(f"Player results: {total_player_results:,}")
     print(f"Unique players: {unique_player_count:,}")
+    print(f"Total time: {format_duration(total_time_seconds)}")
+    print(f"Normal Bingo blanks: {len(normal_bingo_blanks):,}")
+    print(f"Normal Bingo blanks (V7+): {len(normal_bingo_blanks_v7_plus):,}")
     print(f"Most entrants in one race: {most_entrants:,}")
     print(f"Output written to: {output_file}")
 
@@ -195,7 +273,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "input",
         nargs="?",
-        default="bingo_races_fixed_urls.json",
+        default="bingo_races_filtered.json",
         help="Input race JSON file"
     )
 

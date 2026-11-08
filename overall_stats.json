@@ -1,9 +1,9 @@
 {
-  "source": "bingo_races_fixed_urls.json",
-  "totalRaces": 8323,
-  "totalPlayerResults": 41533,
-  "uniquePlayers": 1093,
-  "averageEntrantsPerRace": 4.990147783251231,
+  "source": "bingo_races_filtered.json",
+  "totalRaces": 8314,
+  "totalPlayerResults": 41469,
+  "uniquePlayers": 1090,
+  "averageEntrantsPerRace": 4.987851816213616,
   "mostEntrantsInRace": 73,
   "mostEntrantsRace": {
     "raceId": 203214,
@@ -12,23 +12,23 @@
     "date": "2017-09-11T09:19",
     "raceUrl": "http://www.speedrunslive.com/races/result/203214"
   },
-  "completions": 33345,
-  "forfeits": 8188,
-  "completionRate": 0.8028555606385284,
-  "totalTimeSeconds": 193611159,
-  "normalRaceCount": 5914,
-  "normalFinishCount": 26241,
-  "averageNormalFinishSeconds": 6058.8806829008045,
-  "averageNormalFinishTime": "1:40:59",
-  "normalWinnerCount": 5914,
-  "averageNormalWinnerSeconds": 5096.630199526548,
-  "averageNormalWinnerTime": "1:24:57",
-  "normalBingoBlanks": 4351,
+  "completions": 33285,
+  "forfeits": 8184,
+  "completionRate": 0.80264776097808,
+  "totalTimeSeconds": 193576826,
+  "normalRaceCount": 5908,
+  "normalFinishCount": 26198,
+  "averageNormalFinishSeconds": 6067.922207802122,
+  "averageNormalFinishTime": "1:41:08",
+  "normalWinnerCount": 5908,
+  "averageNormalWinnerSeconds": 5101.276404874746,
+  "averageNormalWinnerTime": "1:25:01",
+  "normalBingoBlanks": 4332,
   "normalBingoBlanksV7Plus": 2945,
   "raceTypes": [
     {
       "type": "normal",
-      "count": 5914
+      "count": 5908
     },
     {
       "type": "short",
@@ -36,7 +36,7 @@
     },
     {
       "type": "blackout",
-      "count": 138
+      "count": 137
     },
     {
       "type": "child",
@@ -44,7 +44,7 @@
     },
     {
       "type": "double",
-      "count": 43
+      "count": 41
     },
     {
       "type": "anti",
@@ -130,7 +130,7 @@
     },
     {
       "version": "5",
-      "count": 148
+      "count": 139
     },
     {
       "version": "2",
