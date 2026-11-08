@@ -19,7 +19,7 @@ async function loadOverallPlayerStats() {
         { key: "completionPercent", label: "% Complete", type: "number", percent: true, defaultVisible: true },
         { key: "wins", label: "Wins", type: "number", defaultVisible: true },
         { key: "winPercent", label: "Win%", type: "number", percent: true, defaultVisible: true },
-        { key: "top3Finishes", label: "Top 3\nFinishes", type: "number", defaultVisible: true },
+        { key: "top3Finishes", label: "Top 3\nFinishes", type: "number", defaultVisible: false },
         { key: "totalTimeSeconds", label: "Total Time", type: "duration", defaultVisible: true },
         { key: "averageTimeSeconds", label: "Average Time", type: "duration", defaultVisible: false },
         { key: "bestTimeSeconds", label: "Best Time", type: "duration", defaultVisible: false },
@@ -293,6 +293,7 @@ async function loadOverallPlayerStats() {
         versionGroup.append(versionHeading, versionOptions);
 
         const columnGroup = makeElement("details", "player-stats-column-details");
+        columnGroup.open = true;
         const columnSummary = makeElement("summary", "", "Choose columns");
         const columnOptions = makeElement("div", "player-stats-column-options");
 
@@ -330,11 +331,17 @@ async function loadOverallPlayerStats() {
         )].sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: "base" }));
     }
 
+    function isBetaVersion(version) {
+        return String(version).toLowerCase().startsWith("beta");
+    }
+
     function renderVersionOptions() {
         const versionOptions = container.querySelector(".player-stats-version-options");
         versionOptions.replaceChildren();
 
         const versions = getVersionsForSelectedType();
+        const betaVersions = versions.filter(isBetaVersion);
+        const regularVersions = versions.filter(version => !isBetaVersion(version));
         const allSelected = versions.length > 0 && versions.every(version => selectedVersions.has(version));
 
         const allLabel = makeElement("label", "player-stats-checkbox player-stats-all-versions");
@@ -350,7 +357,28 @@ async function loadOverallPlayerStats() {
         versionOptions.appendChild(allLabel);
 
         const versionList = makeElement("div", "player-stats-version-list");
-        versions.forEach(version => {
+
+        if (betaVersions.length) {
+            const betaLabel = makeElement("label", "player-stats-checkbox");
+            const betaCheckbox = document.createElement("input");
+            betaCheckbox.type = "checkbox";
+            betaCheckbox.checked = betaVersions.every(version => selectedVersions.has(version));
+            betaCheckbox.addEventListener("change", () => {
+                betaVersions.forEach(version => {
+                    if (betaCheckbox.checked) {
+                        selectedVersions.add(version);
+                    } else {
+                        selectedVersions.delete(version);
+                    }
+                });
+                currentPage = 1;
+                refresh();
+            });
+            betaLabel.append(betaCheckbox, document.createTextNode("Beta versions"));
+            versionList.appendChild(betaLabel);
+        }
+
+        regularVersions.forEach(version => {
             const label = makeElement("label", "player-stats-checkbox");
             const checkbox = document.createElement("input");
             checkbox.type = "checkbox";
@@ -408,9 +436,15 @@ async function loadOverallPlayerStats() {
                     const [existing] = sortCriteria.splice(existingIndex, 1);
                     sortCriteria.unshift(existing);
                 } else {
+                    const ascendingFirst = [
+                        "player",
+                        "averageTimeSeconds",
+                        "bestTimeSeconds",
+                        "medianTimeSeconds"
+                    ].includes(column.key);
                     sortCriteria.unshift({
                         key: column.key,
-                        direction: column.key === "player" ? "asc" : "desc"
+                        direction: ascendingFirst ? "asc" : "desc"
                     });
                     sortCriteria = sortCriteria.slice(0, 2);
                 }
