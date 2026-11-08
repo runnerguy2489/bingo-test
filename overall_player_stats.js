@@ -3,13 +3,13 @@ async function loadOverallPlayerStats() {
     const pageSize = 100;
     const columns = [
         { key: "player", label: "Player", type: "text" },
-        { key: "bingosEntered", label: "Bingos Entered", type: "number" },
+        { key: "bingosEntered", label: "Bingos\\nEntered", type: "number" },
         { key: "completions", label: "Completions", type: "number" },
         { key: "forfeits", label: "Forfeits", type: "number" },
         { key: "completionPercent", label: "% Complete", type: "number", percent: true },
         { key: "wins", label: "Wins", type: "number" },
         { key: "winPercent", label: "Win%", type: "number", percent: true },
-        { key: "top3Finishes", label: "Top 3 Finishes", type: "number" },
+        { key: "top3Finishes", label: "Top 3\\nFinishes", type: "number" },
         { key: "totalTimeSeconds", label: "Total Time", type: "number", duration: true }
     ];
 
@@ -154,40 +154,46 @@ async function loadOverallPlayerStats() {
         table.appendChild(tbody);
         tableWrap.appendChild(table);
 
-        const pagination = makeElement("div", "player-stats-pagination");
-        const previousButton = makeElement("button", "player-stats-page-button", "Previous");
-        previousButton.type = "button";
-        previousButton.disabled = currentPage === 1;
-        previousButton.addEventListener("click", () => {
-            currentPage--;
-            render();
-        });
+        function makePagination() {
+            const pagination = makeElement("div", "player-stats-pagination");
+            const previousButton = makeElement("button", "player-stats-page-button", "Previous");
+            previousButton.type = "button";
+            previousButton.disabled = currentPage === 1;
+            previousButton.addEventListener("click", () => {
+                currentPage--;
+                render();
+            });
 
-        const nextButton = makeElement("button", "player-stats-page-button", "Next");
-        nextButton.type = "button";
-        nextButton.disabled = currentPage === totalPages;
-        nextButton.addEventListener("click", () => {
-            currentPage++;
-            render();
-        });
+            const nextButton = makeElement("button", "player-stats-page-button", "Next");
+            nextButton.type = "button";
+            nextButton.disabled = currentPage === totalPages;
+            nextButton.addEventListener("click", () => {
+                currentPage++;
+                render();
+            });
 
-        const firstShown = sortedPlayers.length ? startIndex + 1 : 0;
-        const lastShown = Math.min(startIndex + pageSize, sortedPlayers.length);
-        const pageLabel = makeElement(
-            "span",
-            "player-stats-page-label",
-            "Showing " + number(firstShown) + "–" + number(lastShown) +
-            " of " + number(sortedPlayers.length) + " players · Page " +
-            number(currentPage) + " of " + number(totalPages)
-        );
-        pagination.append(previousButton, pageLabel, nextButton);
+            const firstShown = sortedPlayers.length ? startIndex + 1 : 0;
+            const lastShown = Math.min(startIndex + pageSize, sortedPlayers.length);
+            const pageLabel = makeElement(
+                "span",
+                "player-stats-page-label",
+                "Showing " + number(firstShown) + "–" + number(lastShown) +
+                " of " + number(sortedPlayers.length) + " players · Page " +
+                number(currentPage) + " of " + number(totalPages)
+            );
+            pagination.append(previousButton, pageLabel, nextButton);
+            return pagination;
+        }
+
+        const topPagination = makePagination();
+        const bottomPagination = makePagination();
 
         const sortNote = makeElement(
             "p",
             "h2h-table-note",
             "Select a column heading to sort. Select it again to reverse the sort order. The table displays 100 players per page."
         );
-        container.replaceChildren(tableWrap, pagination, sortNote);
+        container.replaceChildren(topPagination, tableWrap, bottomPagination, sortNote);
     }
 
     try {
