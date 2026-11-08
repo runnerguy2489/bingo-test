@@ -713,15 +713,20 @@ h2 {
 .player-stats-table td {
     padding: 9px 8px;
 }
-.player-stats-table th:nth-child(1) { width: 160px; }
-.player-stats-table th:nth-child(2) { width: 85px; }
-.player-stats-table th:nth-child(3) { width: 90px; }
-.player-stats-table th:nth-child(4) { width: 65px; }
-.player-stats-table th:nth-child(5) { width: 95px; }
-.player-stats-table th:nth-child(6) { width: 65px; }
-.player-stats-table th:nth-child(7) { width: 75px; }
-.player-stats-table th:nth-child(8) { width: 85px; }
-.player-stats-table th:nth-child(9) { width: 130px; }
+.player-stats-table th[data-column-key="player"] { width: 160px; }
+.player-stats-table th[data-column-key="bingosEntered"] { width: 85px; }
+.player-stats-table th[data-column-key="completions"] { width: 90px; }
+.player-stats-table th[data-column-key="forfeits"] { width: 65px; }
+.player-stats-table th[data-column-key="completionPercent"] { width: 95px; }
+.player-stats-table th[data-column-key="wins"] { width: 65px; }
+.player-stats-table th[data-column-key="winPercent"] { width: 75px; }
+.player-stats-table th[data-column-key="top3Finishes"] { width: 85px; }
+.player-stats-table th[data-column-key="totalTimeSeconds"] { width: 130px; }
+.player-stats-table th[data-column-key$="TimeSeconds"] { min-width: 115px; }
+.player-stats-table th[data-column-key="blanks"],
+.player-stats-table th[data-column-key="blanksV7Plus"],
+.player-stats-table th[data-column-key="snipes"],
+.player-stats-table th[data-column-key="sniped"] { width: 75px; }
 .player-stats-table th {
     white-space: normal;
 }
@@ -836,4 +841,101 @@ h2 {
     margin-top: 0;
     border-top-left-radius: 0;
     border-top-right-radius: 0;
+}
+
+
+/* Overall player statistics filters and column selector */
+.player-stats-controls {
+    display: grid;
+    grid-template-columns: minmax(180px, 220px) minmax(0, 1fr);
+    gap: 18px;
+    margin: 22px 0 18px;
+    padding: 20px;
+    background: #222222;
+    border: 1px solid #3b3b3b;
+    border-radius: 6px;
+}
+.player-stats-control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    min-width: 0;
+}
+.player-stats-control-group > label,
+.player-stats-control-label {
+    color: #d6b85c;
+    font-weight: bold;
+}
+.player-stats-select {
+    width: 100%;
+    min-height: 40px;
+    padding: 8px 10px;
+    color: #eeeeee;
+    background: #303030;
+    border: 1px solid #555555;
+    border-radius: 5px;
+    font-size: 14px;
+}
+.player-stats-version-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.player-stats-version-list,
+.player-stats-column-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px 15px;
+}
+.player-stats-version-list {
+    max-height: 150px;
+    overflow-y: auto;
+    padding: 10px;
+    background: #1b1b1b;
+    border: 1px solid #3b3b3b;
+    border-radius: 5px;
+}
+.player-stats-checkbox {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #cccccc;
+    font-size: 13px;
+    white-space: nowrap;
+    cursor: pointer;
+}
+.player-stats-checkbox input {
+    width: 15px;
+    height: 15px;
+    margin: 0;
+    accent-color: #c5a64b;
+}
+.player-stats-all-versions {
+    font-weight: bold;
+}
+.player-stats-column-details {
+    grid-column: 1 / -1;
+    border-top: 1px solid #444444;
+    padding-top: 14px;
+}
+.player-stats-column-details summary {
+    color: #d6b85c;
+    font-weight: bold;
+    cursor: pointer;
+}
+.player-stats-column-options {
+    margin-top: 12px;
+}
+.player-stats-muted {
+    color: #999999;
+    font-size: 13px;
+}
+@media (max-width: 650px) {
+    .player-stats-controls {
+        grid-template-columns: 1fr;
+        padding: 16px;
+    }
+    .player-stats-column-details {
+        grid-column: 1;
+    }
 }
