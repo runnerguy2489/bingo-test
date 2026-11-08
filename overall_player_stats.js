@@ -3,13 +3,13 @@ async function loadOverallPlayerStats() {
     const pageSize = 100;
     const columns = [
         { key: "player", label: "Player", type: "text" },
-        { key: "bingosEntered", label: "Bingos\\nEntered", type: "number" },
+        { key: "bingosEntered", label: "Bingos\nEntered", type: "number" },
         { key: "completions", label: "Completions", type: "number" },
         { key: "forfeits", label: "Forfeits", type: "number" },
         { key: "completionPercent", label: "% Complete", type: "number", percent: true },
         { key: "wins", label: "Wins", type: "number" },
         { key: "winPercent", label: "Win%", type: "number", percent: true },
-        { key: "top3Finishes", label: "Top 3\\nFinishes", type: "number" },
+        { key: "top3Finishes", label: "Top 3\nFinishes", type: "number" },
         { key: "totalTimeSeconds", label: "Total Time", type: "number", duration: true }
     ];
 
@@ -188,12 +188,29 @@ async function loadOverallPlayerStats() {
         const topPagination = makePagination();
         const bottomPagination = makePagination();
 
+        const topScrollbar = makeElement("div", "player-stats-top-scrollbar");
+        topScrollbar.setAttribute("aria-hidden", "true");
+        const topScrollbarInner = makeElement("div", "player-stats-top-scrollbar-inner");
+        topScrollbar.appendChild(topScrollbarInner);
+
         const sortNote = makeElement(
             "p",
             "h2h-table-note",
             "Select a column heading to sort. Select it again to reverse the sort order. The table displays 100 players per page."
         );
-        container.replaceChildren(topPagination, tableWrap, bottomPagination, sortNote);
+        container.replaceChildren(topPagination, topScrollbar, tableWrap, bottomPagination, sortNote);
+
+        topScrollbarInner.style.width = table.scrollWidth + "px";
+        topScrollbar.addEventListener("scroll", () => {
+            if (tableWrap.scrollLeft !== topScrollbar.scrollLeft) {
+                tableWrap.scrollLeft = topScrollbar.scrollLeft;
+            }
+        });
+        tableWrap.addEventListener("scroll", () => {
+            if (topScrollbar.scrollLeft !== tableWrap.scrollLeft) {
+                topScrollbar.scrollLeft = tableWrap.scrollLeft;
+            }
+        });
     }
 
     try {
