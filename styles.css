@@ -691,3 +691,92 @@ h2 {
         column-gap: 20px;
     }
 }
+
+
+
+/* Overall player statistics table */
+.player-stats-summary {
+    color: #bbbbbb;
+    margin: 18px 2px;
+}
+.player-stats-table-wrap {
+    margin-top: 18px;
+}
+.player-stats-table {
+    min-width: 1180px;
+}
+.player-stats-table th {
+    white-space: nowrap;
+}
+.player-stats-sort {
+    appearance: none;
+    padding: 0;
+    color: inherit;
+    background: transparent;
+    border: 0;
+    font: inherit;
+    font-weight: bold;
+    text-align: left;
+    cursor: pointer;
+}
+.player-stats-sort:hover {
+    color: #ffffff;
+}
+.player-stats-sort:focus-visible {
+    outline: 2px solid #d6b85c;
+    outline-offset: 4px;
+}
+.player-stats-table td {
+    font-variant-numeric: tabular-nums;
+}
+.player-stats-name {
+    color: #d6b85c;
+    font-weight: bold;
+}
+.player-stats-empty {
+    text-align: center !important;
+    color: #aaaaaa;
+    padding: 28px !important;
+}
+.player-stats-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    margin-top: 18px;
+}
+.player-stats-page-button {
+    appearance: none;
+    padding: 9px 16px;
+    color: #cccccc;
+    background: #303030;
+    border: 1px solid #555555;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+}
+.player-stats-page-button:hover:not(:disabled) {
+    color: #ffffff;
+    background: #484848;
+}
+.player-stats-page-button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+.player-stats-page-label {
+    color: #bbbbbb;
+    font-size: 13px;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+}
+@media (max-width: 600px) {
+    .player-stats-pagination {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    .player-stats-page-label {
+        order: -1;
+        width: 100%;
+    }
+}
