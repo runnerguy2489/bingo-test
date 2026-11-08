@@ -705,8 +705,9 @@ h2 {
     position: relative;
 }
 .player-stats-table {
-    min-width: 850px;
-    table-layout: fixed;
+    width: max-content;
+    min-width: 100%;
+    table-layout: auto;
     font-size: 12px;
 }
 .player-stats-table th,
