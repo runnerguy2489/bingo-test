@@ -139,7 +139,7 @@ if __name__ == "__main__":
 
     parser.add_argument(
         "--input",
-        default="bingo_races_fixed_urls.json",
+        default="bingo_races_filtered.json",
         help="Input converted race JSON file."
     )
 
