@@ -808,3 +808,25 @@ h2 {
         width: 100%;
     }
 }
+
+
+/* Synchronized horizontal scrollbar above the overall player stats table */
+.player-stats-top-scrollbar {
+    width: 100%;
+    height: 16px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    margin-top: 2px;
+    background: #222222;
+    border: 1px solid #3b3b3b;
+    border-bottom: 0;
+    border-radius: 6px 6px 0 0;
+}
+.player-stats-top-scrollbar-inner {
+    height: 1px;
+}
+.player-stats-top-scrollbar + .player-stats-table-wrap {
+    margin-top: 0;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
