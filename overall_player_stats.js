@@ -14,7 +14,7 @@ async function loadOverallPlayerStats() {
     ];
 
     let players = [];
-    let sortCriteria = [{ key: "player", direction: "asc" }];
+    let sortCriteria = [{ key: "completions", direction: "desc" }];
     let currentPage = 1;
 
     const number = value => Number(value || 0).toLocaleString();
@@ -120,7 +120,8 @@ async function loadOverallPlayerStats() {
                     const [existing] = sortCriteria.splice(existingIndex, 1);
                     sortCriteria.unshift(existing);
                 } else {
-                    sortCriteria.unshift({ key: column.key, direction: "asc" });
+                    sortCriteria.unshift({ key: column.key, direction: column.key === "player" ? "asc" : "desc" });
+                    sortCriteria = sortCriteria.slice(0, 2);
                 }
                 currentPage = 1;
                 render();
