@@ -705,19 +705,26 @@ h2 {
     position: relative;
 }
 .player-stats-table {
-    min-width: 1050px;
+    min-width: 850px;
+    table-layout: fixed;
     font-size: 12px;
 }
 .player-stats-table th,
 .player-stats-table td {
-    padding: 9px 10px;
+    padding: 9px 8px;
 }
+.player-stats-table th:nth-child(1) { width: 160px; }
+.player-stats-table th:nth-child(2) { width: 85px; }
+.player-stats-table th:nth-child(3) { width: 90px; }
+.player-stats-table th:nth-child(4) { width: 65px; }
+.player-stats-table th:nth-child(5) { width: 95px; }
+.player-stats-table th:nth-child(6) { width: 65px; }
+.player-stats-table th:nth-child(7) { width: 75px; }
+.player-stats-table th:nth-child(8) { width: 85px; }
+.player-stats-table th:nth-child(9) { width: 130px; }
 .player-stats-table th {
     white-space: normal;
 }
-.player-stats-table th:nth-child(1) { width: 160px; }
-.player-stats-table th:nth-child(2),
-.player-stats-table th:nth-child(8) { width: 78px; }
 .player-stats-sort {
     appearance: none;
     padding: 0;
