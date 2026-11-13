@@ -20,6 +20,7 @@
   ],
   "versions": [
     "1",
+    "1.1",
     "10",
     "10.1",
     "2",
@@ -650,7 +651,7 @@
     },
     {
       "raceId": 661,
-      "version": "1",
+      "version": "1.1",
       "type": "normal",
       "players": [
         {
@@ -681,7 +682,7 @@
     },
     {
       "raceId": 667,
-      "version": "1",
+      "version": "1.1",
       "type": "normal",
       "players": [
         {
@@ -700,7 +701,7 @@
     },
     {
       "raceId": 673,
-      "version": "1",
+      "version": "1.1",
       "type": "normal",
       "players": [
         {
@@ -719,7 +720,7 @@
     },
     {
       "raceId": 674,
-      "version": "1",
+      "version": "1.1",
       "type": "normal",
       "players": [
         {
@@ -738,7 +739,7 @@
     },
     {
       "raceId": 675,
-      "version": "1",
+      "version": "1.1",
       "type": "normal",
       "players": [
         {
@@ -763,7 +764,7 @@
     },
     {
       "raceId": 680,
-      "version": "1",
+      "version": "1.1",
       "type": "normal",
       "players": [
         {
@@ -782,7 +783,7 @@
     },
     {
       "raceId": 694,
-      "version": "1",
+      "version": "1.1",
       "type": "normal",
       "players": [
         {
@@ -801,7 +802,7 @@
     },
     {
       "raceId": 715,
-      "version": "1",
+      "version": "1.1",
       "type": "normal",
       "players": [
         {
@@ -40537,7 +40538,7 @@
     },
     {
       "raceId": 19832,
-      "version": "4",
+      "version": "5",
       "type": "short",
       "players": [
         {
@@ -40568,7 +40569,7 @@
     },
     {
       "raceId": 19848,
-      "version": "4",
+      "version": "5",
       "type": "normal",
       "players": [
         {
@@ -40605,7 +40606,7 @@
     },
     {
       "raceId": 19887,
-      "version": "4",
+      "version": "5",
       "type": "short",
       "players": [
         {
@@ -40642,7 +40643,7 @@
     },
     {
       "raceId": 19912,
-      "version": "4",
+      "version": "5",
       "type": "normal",
       "players": [
         {
@@ -40673,7 +40674,7 @@
     },
     {
       "raceId": 19935,
-      "version": "4",
+      "version": "5",
       "type": "short",
       "players": [
         {
@@ -40716,7 +40717,7 @@
     },
     {
       "raceId": 19938,
-      "version": "4",
+      "version": "5",
       "type": "short",
       "players": [
         {
@@ -40759,7 +40760,7 @@
     },
     {
       "raceId": 19952,
-      "version": "4",
+      "version": "5",
       "type": "short",
       "players": [
         {
@@ -40802,7 +40803,7 @@
     },
     {
       "raceId": 19962,
-      "version": "4",
+      "version": "5",
       "type": "normal",
       "players": [
         {
@@ -40887,7 +40888,7 @@
     },
     {
       "raceId": 19976,
-      "version": "4",
+      "version": "5",
       "type": "normal",
       "players": [
         {
@@ -40936,7 +40937,7 @@
     },
     {
       "raceId": 20001,
-      "version": "4",
+      "version": "5",
       "type": "short",
       "players": [
         {
@@ -40967,7 +40968,7 @@
     },
     {
       "raceId": 20020,
-      "version": "4",
+      "version": "5",
       "type": "short",
       "players": [
         {
@@ -40992,7 +40993,7 @@
     },
     {
       "raceId": 20024,
-      "version": "4",
+      "version": "5",
       "type": "short",
       "players": [
         {
@@ -41029,7 +41030,7 @@
     },
     {
       "raceId": 20025,
-      "version": "4",
+      "version": "5",
       "type": "short",
       "players": [
         {
@@ -41084,7 +41085,7 @@
     },
     {
       "raceId": 20032,
-      "version": "4",
+      "version": "5",
       "type": "normal",
       "players": [
         {
@@ -41121,7 +41122,7 @@
     },
     {
       "raceId": 20050,
-      "version": "4",
+      "version": "5",
       "type": "normal",
       "players": [
         {
@@ -41362,7 +41363,7 @@
     },
     {
       "raceId": 20069,
-      "version": "4",
+      "version": "5",
       "type": "short",
       "players": [
         {
@@ -41381,7 +41382,7 @@
     },
     {
       "raceId": 20071,
-      "version": "4",
+      "version": "5",
       "type": "short",
       "players": [
         {
@@ -41400,7 +41401,7 @@
     },
     {
       "raceId": 20074,
-      "version": "4",
+      "version": "5",
       "type": "normal",
       "players": [
         {
@@ -41437,7 +41438,7 @@
     },
     {
       "raceId": 20081,
-      "version": "4",
+      "version": "5",
       "type": "normal",
       "players": [
         {
@@ -41468,7 +41469,7 @@
     },
     {
       "raceId": 20110,
-      "version": "4",
+      "version": "5",
       "type": "short",
       "players": [
         {
@@ -41493,7 +41494,7 @@
     },
     {
       "raceId": 20112,
-      "version": "4",
+      "version": "5",
       "type": "normal",
       "players": [
         {
@@ -41524,7 +41525,7 @@
     },
     {
       "raceId": 20113,
-      "version": "4",
+      "version": "5",
       "type": "short",
       "players": [
         {
@@ -41561,7 +41562,7 @@
     },
     {
       "raceId": 20136,
-      "version": "4",
+      "version": "5",
       "type": "short",
       "players": [
         {
@@ -41586,7 +41587,7 @@
     },
     {
       "raceId": 20138,
-      "version": "4",
+      "version": "5",
       "type": "normal",
       "players": [
         {
@@ -41635,7 +41636,7 @@
     },
     {
       "raceId": 20161,
-      "version": "4",
+      "version": "5",
       "type": "short",
       "players": [
         {
@@ -41666,7 +41667,7 @@
     },
     {
       "raceId": 20171,
-      "version": "4",
+      "version": "5",
       "type": "short",
       "players": [
         {
@@ -41697,7 +41698,7 @@
     },
     {
       "raceId": 20191,
-      "version": "4",
+      "version": "5",
       "type": "normal",
       "players": [
         {
@@ -41740,7 +41741,7 @@
     },
     {
       "raceId": 20203,
-      "version": "4",
+      "version": "5",
       "type": "short",
       "players": [
         {
@@ -41777,7 +41778,7 @@
     },
     {
       "raceId": 20214,
-      "version": "4",
+      "version": "5",
       "type": "short",
       "players": [
         {
@@ -41808,7 +41809,7 @@
     },
     {
       "raceId": 20242,
-      "version": "4",
+      "version": "5",
       "type": "normal",
       "players": [
         {
@@ -46686,7 +46687,7 @@
     },
     {
       "raceId": 23070,
-      "version": "5",
+      "version": "6",
       "type": "short",
       "players": [
         {
@@ -46765,7 +46766,7 @@
     },
     {
       "raceId": 23083,
-      "version": "5",
+      "version": "6",
       "type": "short",
       "players": [
         {
@@ -46784,7 +46785,7 @@
     },
     {
       "raceId": 23088,
-      "version": "5",
+      "version": "6",
       "type": "short",
       "players": [
         {
@@ -46803,7 +46804,7 @@
     },
     {
       "raceId": 23089,
-      "version": "5",
+      "version": "6",
       "type": "short",
       "players": [
         {
@@ -46834,7 +46835,7 @@
     },
     {
       "raceId": 23099,
-      "version": "5",
+      "version": "6",
       "type": "short",
       "players": [
         {
@@ -46865,7 +46866,7 @@
     },
     {
       "raceId": 23100,
-      "version": "5",
+      "version": "6",
       "type": "normal",
       "players": [
         {
@@ -46884,7 +46885,7 @@
     },
     {
       "raceId": 23101,
-      "version": "5",
+      "version": "6",
       "type": "short",
       "players": [
         {
@@ -46909,7 +46910,7 @@
     },
     {
       "raceId": 23132,
-      "version": "5",
+      "version": "6",
       "type": "normal",
       "players": [
         {
@@ -65083,7 +65084,7 @@
     },
     {
       "raceId": 36756,
-      "version": "7",
+      "version": "6",
       "type": "short",
       "players": [
         {
@@ -65102,7 +65103,7 @@
     },
     {
       "raceId": 36772,
-      "version": "7",
+      "version": "6",
       "type": "normal",
       "players": [
         {
@@ -65127,7 +65128,7 @@
     },
     {
       "raceId": 36779,
-      "version": "7",
+      "version": "6",
       "type": "normal",
       "players": [
         {
@@ -65158,7 +65159,7 @@
     },
     {
       "raceId": 36791,
-      "version": "7",
+      "version": "6",
       "type": "normal",
       "players": [
         {
@@ -107525,7 +107526,7 @@
     },
     {
       "raceId": 69795,
-      "version": "6",
+      "version": "2",
       "type": "normal",
       "players": [
         {
@@ -129984,7 +129985,7 @@
     },
     {
       "raceId": 89822,
-      "version": "6",
+      "version": "7.1",
       "type": "normal",
       "players": [
         {
@@ -142864,7 +142865,7 @@
     },
     {
       "raceId": 101074,
-      "version": "6",
+      "version": "8.2",
       "type": "normal",
       "players": [
         {
@@ -143094,7 +143095,7 @@
     },
     {
       "raceId": 101219,
-      "version": "6",
+      "version": "8.2",
       "type": "normal",
       "players": [
         {
@@ -143187,7 +143188,7 @@
     },
     {
       "raceId": 101330,
-      "version": "6",
+      "version": "8.2",
       "type": "normal",
       "players": [
         {
@@ -143261,7 +143262,7 @@
     },
     {
       "raceId": 101468,
-      "version": "8.2",
+      "version": "8.1",
       "type": "normal",
       "players": [
         {
@@ -151837,7 +151838,7 @@
     },
     {
       "raceId": 107001,
-      "version": "6",
+      "version": "5",
       "type": "short",
       "players": [
         {
@@ -154402,7 +154403,7 @@
     },
     {
       "raceId": 107971,
-      "version": "6",
+      "version": "2",
       "type": "normal",
       "players": [
         {
@@ -155865,7 +155866,7 @@
     },
     {
       "raceId": 108653,
-      "version": "6",
+      "version": "2",
       "type": "normal",
       "players": [
         {
@@ -156304,7 +156305,7 @@
     },
     {
       "raceId": 108813,
-      "version": "6",
+      "version": "2",
       "type": "normal",
       "players": [
         {
@@ -156465,7 +156466,7 @@
     },
     {
       "raceId": 108862,
-      "version": "6",
+      "version": "2",
       "type": "normal",
       "players": [
         {
@@ -156680,7 +156681,7 @@
     },
     {
       "raceId": 108957,
-      "version": "6",
+      "version": "2",
       "type": "normal",
       "players": [
         {
@@ -156761,7 +156762,7 @@
     },
     {
       "raceId": 108977,
-      "version": "6",
+      "version": "2",
       "type": "normal",
       "players": [
         {
@@ -158107,7 +158108,7 @@
     },
     {
       "raceId": 109698,
-      "version": "6",
+      "version": "7",
       "type": "short",
       "players": [
         {
@@ -158282,7 +158283,7 @@
     },
     {
       "raceId": 109785,
-      "version": "6",
+      "version": "7",
       "type": "short",
       "players": [
         {
@@ -170880,7 +170881,7 @@
     },
     {
       "raceId": 121358,
-      "version": "8.4",
+      "version": "8.3",
       "type": "normal",
       "players": [
         {
@@ -212493,7 +212494,7 @@
     },
     {
       "raceId": 166936,
-      "version": "8.5",
+      "version": "9",
       "type": "normal",
       "players": [
         {
@@ -212548,7 +212549,7 @@
     },
     {
       "raceId": 166942,
-      "version": "8.5",
+      "version": "9",
       "type": "normal",
       "players": [
         {
@@ -212603,7 +212604,7 @@
     },
     {
       "raceId": 166956,
-      "version": "8.5",
+      "version": "9",
       "type": "normal",
       "players": [
         {
@@ -212628,7 +212629,7 @@
     },
     {
       "raceId": 166961,
-      "version": "8.5",
+      "version": "9",
       "type": "normal",
       "players": [
         {
@@ -212689,7 +212690,7 @@
     },
     {
       "raceId": 166978,
-      "version": "8.5",
+      "version": "9",
       "type": "normal",
       "players": [
         {
@@ -212756,7 +212757,7 @@
     },
     {
       "raceId": 166992,
-      "version": "8.5",
+      "version": "9",
       "type": "normal",
       "players": [
         {
@@ -212829,7 +212830,7 @@
     },
     {
       "raceId": 166993,
-      "version": "8.5",
+      "version": "9",
       "type": "normal",
       "players": [
         {
@@ -212860,7 +212861,7 @@
     },
     {
       "raceId": 167037,
-      "version": "8.5",
+      "version": "9",
       "type": "normal",
       "players": [
         {
@@ -212897,7 +212898,7 @@
     },
     {
       "raceId": 167045,
-      "version": "8.5",
+      "version": "9",
       "type": "normal",
       "players": [
         {
@@ -212940,7 +212941,7 @@
     },
     {
       "raceId": 167047,
-      "version": "8.5",
+      "version": "9",
       "type": "normal",
       "players": [
         {
@@ -212965,7 +212966,7 @@
     },
     {
       "raceId": 167055,
-      "version": "8.5",
+      "version": "9",
       "type": "normal",
       "players": [
         {
@@ -213002,7 +213003,7 @@
     },
     {
       "raceId": 167065,
-      "version": "8.5",
+      "version": "9",
       "type": "normal",
       "players": [
         {
@@ -213021,7 +213022,7 @@
     },
     {
       "raceId": 167071,
-      "version": "8.5",
+      "version": "9",
       "type": "normal",
       "players": [
         {
@@ -213106,7 +213107,7 @@
     },
     {
       "raceId": 167089,
-      "version": "8.5",
+      "version": "9",
       "type": "normal",
       "players": [
         {
@@ -213125,7 +213126,7 @@
     },
     {
       "raceId": 167092,
-      "version": "8.5",
+      "version": "9",
       "type": "normal",
       "players": [
         {
@@ -213174,7 +213175,7 @@
     },
     {
       "raceId": 167116,
-      "version": "8.5",
+      "version": "9",
       "type": "normal",
       "players": [
         {
@@ -213235,7 +213236,7 @@
     },
     {
       "raceId": 167119,
-      "version": "8.5",
+      "version": "9",
       "type": "normal",
       "players": [
         {
@@ -213278,7 +213279,7 @@
     },
     {
       "raceId": 167135,
-      "version": "8.5",
+      "version": "9",
       "type": "normal",
       "players": [
         {
@@ -213297,7 +213298,7 @@
     },
     {
       "raceId": 167138,
-      "version": "8.5",
+      "version": "9",
       "type": "normal",
       "players": [
         {
@@ -213328,7 +213329,7 @@
     },
     {
       "raceId": 167161,
-      "version": "8.5",
+      "version": "9",
       "type": "normal",
       "players": [
         {
@@ -213347,7 +213348,7 @@
     },
     {
       "raceId": 167165,
-      "version": "8.5",
+      "version": "9",
       "type": "normal",
       "players": [
         {
@@ -213372,7 +213373,7 @@
     },
     {
       "raceId": 167170,
-      "version": "8.5",
+      "version": "9",
       "type": "normal",
       "players": [
         {
@@ -213391,7 +213392,7 @@
     },
     {
       "raceId": 167171,
-      "version": "8.5",
+      "version": "9",
       "type": "normal",
       "players": [
         {
@@ -213428,7 +213429,7 @@
     },
     {
       "raceId": 167176,
-      "version": "8.5",
+      "version": "9",
       "type": "normal",
       "players": [
         {
@@ -213465,7 +213466,7 @@
     },
     {
       "raceId": 167174,
-      "version": "8.5",
+      "version": "9",
       "type": "normal",
       "players": [
         {
@@ -213484,7 +213485,7 @@
     },
     {
       "raceId": 167190,
-      "version": "8.5",
+      "version": "9",
       "type": "normal",
       "players": [
         {
@@ -213557,7 +213558,7 @@
     },
     {
       "raceId": 167209,
-      "version": "8.5",
+      "version": "9",
       "type": "blackout",
       "players": [
         {
@@ -213588,7 +213589,7 @@
     },
     {
       "raceId": 167212,
-      "version": "8.5",
+      "version": "9",
       "type": "normal",
       "players": [
         {
@@ -213607,7 +213608,7 @@
     },
     {
       "raceId": 167218,
-      "version": "8.5",
+      "version": "9",
       "type": "normal",
       "players": [
         {
@@ -213626,7 +213627,7 @@
     },
     {
       "raceId": 167225,
-      "version": "8.5",
+      "version": "9",
       "type": "normal",
       "players": [
         {
@@ -213657,7 +213658,7 @@
     },
     {
       "raceId": 167233,
-      "version": "8.5",
+      "version": "9",
       "type": "normal",
       "players": [
         {
@@ -213706,7 +213707,7 @@
     },
     {
       "raceId": 167248,
-      "version": "8.5",
+      "version": "9",
       "type": "normal",
       "players": [
         {
@@ -213779,7 +213780,7 @@
     },
     {
       "raceId": 167266,
-      "version": "8.5",
+      "version": "9",
       "type": "normal",
       "players": [
         {
@@ -213816,7 +213817,7 @@
     },
     {
       "raceId": 167280,
-      "version": "8.5",
+      "version": "9",
       "type": "normal",
       "players": [
         {
@@ -213859,7 +213860,7 @@
     },
     {
       "raceId": 167285,
-      "version": "8.5",
+      "version": "9",
       "type": "normal",
       "players": [
         {
@@ -213890,7 +213891,7 @@
     },
     {
       "raceId": 167288,
-      "version": "8.5",
+      "version": "9",
       "type": "normal",
       "players": [
         {
@@ -213909,7 +213910,7 @@
     },
     {
       "raceId": 167290,
-      "version": "8.5",
+      "version": "9",
       "type": "normal",
       "players": [
         {
@@ -213934,7 +213935,7 @@
     },
     {
       "raceId": 167289,
-      "version": "8.5",
+      "version": "9",
       "type": "normal",
       "players": [
         {
@@ -213971,7 +213972,7 @@
     },
     {
       "raceId": 167293,
-      "version": "8.5",
+      "version": "9",
       "type": "normal",
       "players": [
         {
@@ -214014,7 +214015,7 @@
     },
     {
       "raceId": 167292,
-      "version": "8.5",
+      "version": "9",
       "type": "normal",
       "players": [
         {
@@ -214033,7 +214034,7 @@
     },
     {
       "raceId": 167294,
-      "version": "8.5",
+      "version": "9",
       "type": "normal",
       "players": [
         {
@@ -214052,7 +214053,7 @@
     },
     {
       "raceId": 167302,
-      "version": "8.5",
+      "version": "9",
       "type": "normal",
       "players": [
         {
@@ -214071,7 +214072,7 @@
     },
     {
       "raceId": 167319,
-      "version": "8.5",
+      "version": "9",
       "type": "normal",
       "players": [
         {
@@ -214132,7 +214133,7 @@
     },
     {
       "raceId": 167331,
-      "version": "8.5",
+      "version": "9",
       "type": "normal",
       "players": [
         {
@@ -214205,7 +214206,7 @@
     },
     {
       "raceId": 167343,
-      "version": "8.5",
+      "version": "9",
       "type": "normal",
       "players": [
         {
@@ -214224,7 +214225,7 @@
     },
     {
       "raceId": 167348,
-      "version": "8.5",
+      "version": "9",
       "type": "normal",
       "players": [
         {
@@ -229775,7 +229776,7 @@
     },
     {
       "raceId": 174870,
-      "version": "9.1",
+      "version": "9",
       "type": "normal",
       "players": [
         {
@@ -229812,7 +229813,7 @@
     },
     {
       "raceId": 174873,
-      "version": "9.1",
+      "version": "9",
       "type": "normal",
       "players": [
         {
@@ -229843,7 +229844,7 @@
     },
     {
       "raceId": 174893,
-      "version": "9.1",
+      "version": "9",
       "type": "normal",
       "players": [
         {
@@ -229862,7 +229863,7 @@
     },
     {
       "raceId": 174914,
-      "version": "9.1",
+      "version": "9",
       "type": "normal",
       "players": [
         {
@@ -229887,7 +229888,7 @@
     },
     {
       "raceId": 174933,
-      "version": "9.1",
+      "version": "9",
       "type": "normal",
       "players": [
         {
@@ -229924,7 +229925,7 @@
     },
     {
       "raceId": 174939,
-      "version": "9.1",
+      "version": "9",
       "type": "normal",
       "players": [
         {
@@ -229955,7 +229956,7 @@
     },
     {
       "raceId": 175007,
-      "version": "9.1",
+      "version": "9",
       "type": "normal",
       "players": [
         {
@@ -240426,7 +240427,7 @@
     },
     {
       "raceId": 181398,
-      "version": "9.2",
+      "version": "6",
       "type": "normal",
       "players": [
         {

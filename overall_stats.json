@@ -24,7 +24,7 @@
   "averageNormalWinnerSeconds": 5101.276404874746,
   "averageNormalWinnerTime": "1:25:01",
   "normalBingoBlanks": 4332,
-  "normalBingoBlanksV7Plus": 2945,
+  "normalBingoBlanksV7Plus": 2948,
   "raceTypes": [
     {
       "type": "normal",
@@ -78,23 +78,23 @@
   "raceVersions": [
     {
       "version": "9.2",
-      "count": 1192
+      "count": 1191
     },
     {
       "version": "6",
-      "count": 1181
+      "count": 1180
     },
     {
       "version": "4",
-      "count": 939
+      "count": 909
     },
     {
       "version": "7.1",
-      "count": 872
+      "count": 873
     },
     {
       "version": "8.4",
-      "count": 554
+      "count": 553
     },
     {
       "version": "9.3",
@@ -102,23 +102,23 @@
     },
     {
       "version": "8.1",
-      "count": 487
+      "count": 488
     },
     {
       "version": "9",
-      "count": 430
+      "count": 483
     },
     {
       "version": "8.5",
-      "count": 361
+      "count": 315
     },
     {
       "version": "9.1",
-      "count": 313
+      "count": 306
     },
     {
       "version": "8.3",
-      "count": 246
+      "count": 247
     },
     {
       "version": "8",
@@ -126,15 +126,15 @@
     },
     {
       "version": "8.2",
-      "count": 235
+      "count": 237
     },
     {
       "version": "5",
-      "count": 139
+      "count": 162
     },
     {
       "version": "2",
-      "count": 104
+      "count": 111
     },
     {
       "version": "3",
@@ -146,7 +146,7 @@
     },
     {
       "version": "7",
-      "count": 51
+      "count": 49
     },
     {
       "version": "c1",
@@ -161,12 +161,12 @@
       "count": 46
     },
     {
-      "version": "1",
+      "version": "beta9.3",
       "count": 28
     },
     {
-      "version": "beta9.3",
-      "count": 28
+      "version": "1",
+      "count": 20
     },
     {
       "version": "9.5.1",
@@ -187,6 +187,10 @@
     {
       "version": "10.1",
       "count": 11
+    },
+    {
+      "version": "1.1",
+      "count": 8
     },
     {
       "version": "beta0.9.6.3-j",
