@@ -269,6 +269,7 @@ async function loadPlayerProfile() {
 
         if (!completed.length) {
             drawDistributionBars(card, [{ label: "Forfeits", count: forfeits, kind: "forfeit" }]);
+            addDistributionNote(card, false);
             section.appendChild(card);
             parent.appendChild(section);
             return;
@@ -305,6 +306,7 @@ async function loadPlayerProfile() {
                 });
             }
             drawDistributionBars(card, bins, 300);
+            addDistributionNote(card, true);
             section.appendChild(card);
             parent.appendChild(section);
             return;
@@ -368,8 +370,17 @@ async function loadPlayerProfile() {
         }
 
         drawDistributionBars(card, bins, interval);
+        addDistributionNote(card, false);
         section.appendChild(card);
         parent.appendChild(section);
+    }
+
+    function addDistributionNote(card, normalized) {
+        card.appendChild(el(
+            "p",
+            "profile-muted",
+            normalized ? "Normalized bingo distribution" : "Dynamic bingo distribution"
+        ));
     }
 
     function drawDistributionBars(card, bins, interval) {
@@ -441,9 +452,7 @@ async function loadPlayerProfile() {
         const wrap = el("div", "profile-chart-wrap");
         wrap.appendChild(svg);
         card.appendChild(wrap);
-        const intervalLabel = interval ? `${interval / 60}-minute regular bins.` : "";
-        card.appendChild(el("p", "profile-muted",
-            `${intervalLabel} Bin labels show exclusive upper limits (for example, <1:17:30 includes times from 1:15:00 through 1:17:29). Empty bins within the distribution are retained; the slowest group is shown as a time+ bin.`));
+
     }
 
     function drawRecentTimes(parent, entries) {
