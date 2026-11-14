@@ -275,7 +275,8 @@ async function loadPlayerProfile() {
         }
 
         // Use fixed-width bins, increasing the interval only as needed to keep
-        // the chart to about 10 regular bins (12 total including forfeit/overflow).
+        // the regular distribution to about 12 bins. Forfeit and overflow bins
+        // may add one or two more when those categories are present.
         const intervals = [150, 300, 600, 1200]; // 2.5, 5, 10, or 20 minutes
         const p90 = percentile(completed, 0.90);
         let interval = intervals[intervals.length - 1];
@@ -287,7 +288,7 @@ async function loadPlayerProfile() {
             const first = Math.floor(completed[0] / candidate);
             let overflow = Math.floor(p90 / candidate);
             if (overflow <= first) overflow = first + 1;
-            if (overflow - first <= 10) {
+            if (overflow - first <= 12) {
                 interval = candidate;
                 firstBinIndex = first;
                 overflowBinIndex = overflow;
@@ -334,8 +335,9 @@ async function loadPlayerProfile() {
     }
 
     function drawDistributionBars(card, bins, interval) {
-        // Wider bars and a tighter layout make labels and counts easier to read.
-        const width = Math.max(760, bins.length * 68 + 82), height = 370;
+        // Keep the chart compact per bin. Bars fill their slots edge-to-edge,
+        // so alternating colors distinguish adjacent bins without white gaps.
+        const width = Math.max(700, bins.length * 52 + 76), height = 370;
         const left = 58, right = 18, top = 24, bottom = 126;
         const plotW = width - left - right, plotH = height - top - bottom;
         const peak = Math.max(1, ...bins.map(bin => bin.count));
@@ -362,15 +364,15 @@ async function loadPlayerProfile() {
 
         const slot = plotW / bins.length;
         bins.forEach((bin, index) => {
-            const barW = Math.min(62, slot * .88);
+            const barW = slot;
             const barH = bin.count / peak * plotH;
-            const x = left + index * slot + (slot - barW) / 2;
+            const x = left + index * slot;
             const y = top + plotH - barH;
             let fill;
             if (bin.kind === "forfeit") fill = "#9b6b45";
             else if (bin.kind === "outlier") fill = "#d6b85c";
             else fill = index % 2 === 0 ? "#3979ad" : "#c5a64b";
-            svg.appendChild(svgNode("rect", { x, y, width: barW, height: barH, rx: 3, fill }));
+            svg.appendChild(svgNode("rect", { x, y, width: barW, height: barH, rx: 0, fill }));
 
             const count = svgNode("text", {
                 x: x + barW / 2, y: Math.max(top + 13, y - 7),
