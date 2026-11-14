@@ -233,10 +233,12 @@ async function loadPlayerProfile() {
     }
 
     function formatBinTime(seconds) {
-        const totalMinutes = Math.max(0, Math.floor(seconds / 60));
-        const hours = Math.floor(totalMinutes / 60);
-        const minutes = totalMinutes % 60;
-        return `${hours}:${String(minutes).padStart(2, "0")}`;
+        const total = Math.max(0, Math.floor(seconds));
+        const hours = Math.floor(total / 3600);
+        const minutes = Math.floor((total % 3600) / 60);
+        const secs = total % 60;
+        const base = `${hours}:${String(minutes).padStart(2, "0")}`;
+        return secs ? `${base}:${String(secs).padStart(2, "0")}` : base;
     }
 
     function percentile(sorted, fraction) {
@@ -266,35 +268,38 @@ async function loadPlayerProfile() {
         }
 
         if (!completed.length) {
-            const bins = [{ label: "Forfeits", count: forfeits, kind: "forfeit" }];
-            drawDistributionBars(card, bins);
+            drawDistributionBars(card, [{ label: "Forfeits", count: forfeits, kind: "forfeit" }]);
             section.appendChild(card);
             parent.appendChild(section);
             return;
         }
 
-        // Keep ordinary bins at a consistent interval. Increase the interval only
-        // when needed to keep the main 90% of times to a readable number of bins.
+        // Use fixed-width bins, increasing the interval only as needed to keep
+        // the chart to about 10 regular bins (12 total including forfeit/overflow).
         const intervals = [150, 300, 600, 1200]; // 2.5, 5, 10, or 20 minutes
         const p90 = percentile(completed, 0.90);
         let interval = intervals[intervals.length - 1];
+        let firstBinIndex = Math.floor(completed[0] / interval);
+        let overflowBinIndex = Math.floor(p90 / interval);
+        if (overflowBinIndex <= firstBinIndex) overflowBinIndex = firstBinIndex + 1;
+
         for (const candidate of intervals) {
             const first = Math.floor(completed[0] / candidate);
-            const last = Math.floor(p90 / candidate);
-            if (last - first + 1 <= 16) {
+            let overflow = Math.floor(p90 / candidate);
+            if (overflow <= first) overflow = first + 1;
+            if (overflow - first <= 10) {
                 interval = candidate;
+                firstBinIndex = first;
+                overflowBinIndex = overflow;
                 break;
             }
         }
 
-        const firstBin = Math.floor(completed[0] / interval);
-        const overflowBin = Math.floor(p90 / interval);
         const counts = new Map();
         let overflowCount = 0;
-
         completed.forEach(time => {
             const binIndex = Math.floor(time / interval);
-            if (binIndex >= overflowBin) {
+            if (binIndex >= overflowBinIndex) {
                 overflowCount++;
             } else {
                 counts.set(binIndex, (counts.get(binIndex) || 0) + 1);
@@ -304,13 +309,12 @@ async function loadPlayerProfile() {
         const bins = [];
         if (forfeits > 0) bins.push({ label: "Forfeits", count: forfeits, kind: "forfeit" });
 
-        // Start at the first occupied bin, so empty bins before the data are omitted.
-        // Empty bins between the first occupied bin and the overflow bin are retained.
-        for (let index = firstBin; index < overflowBin; index++) {
-            const start = index * interval;
-            const end = start + interval;
+        // Each label is an exclusive upper bound: "<1:15" includes all times
+        // below 1:15; "<1:17:30" includes 1:15 through 1:17:29.
+        for (let index = firstBinIndex; index < overflowBinIndex; index++) {
+            const upperBound = (index + 1) * interval;
             bins.push({
-                label: `${formatBinTime(start)}–${formatBinTime(end)}`,
+                label: `<${formatBinTime(upperBound)}`,
                 count: counts.get(index) || 0,
                 kind: "normal"
             });
@@ -318,7 +322,7 @@ async function loadPlayerProfile() {
 
         if (overflowCount > 0) {
             bins.push({
-                label: `${formatBinTime(overflowBin * interval)}+`,
+                label: `${formatBinTime(overflowBinIndex * interval)}+`,
                 count: overflowCount,
                 kind: "outlier"
             });
@@ -330,15 +334,16 @@ async function loadPlayerProfile() {
     }
 
     function drawDistributionBars(card, bins, interval) {
-        const width = Math.max(660, bins.length * 86 + 90), height = 350;
-        const left = 58, right = 18, top = 24, bottom = 104;
+        // Wider bars and a tighter layout make labels and counts easier to read.
+        const width = Math.max(760, bins.length * 68 + 82), height = 370;
+        const left = 58, right = 18, top = 24, bottom = 126;
         const plotW = width - left - right, plotH = height - top - bottom;
         const peak = Math.max(1, ...bins.map(bin => bin.count));
         const svg = svgNode("svg", {
             viewBox: `0 0 ${width} ${height}`,
             class: "profile-chart",
             role: "img",
-            "aria-label": "Bingo count by fixed-width completion-time bins; forfeits appear first and the slowest ten percent are grouped into an overflow bin."
+            "aria-label": "Bingo count by fixed-width completion-time bins. Labels are exclusive upper bounds; the slowest times are grouped into a final overflow bin."
         });
 
         for (let tick = 0; tick <= 4; tick++) {
@@ -349,7 +354,7 @@ async function loadPlayerProfile() {
             }));
             const label = svgNode("text", {
                 x: left - 9, y: y + 4, "text-anchor": "end",
-                fill: "currentColor", "font-size": 12
+                fill: "currentColor", "font-size": 13
             });
             label.textContent = String(Math.round(peak * tick / 4));
             svg.appendChild(label);
@@ -357,33 +362,39 @@ async function loadPlayerProfile() {
 
         const slot = plotW / bins.length;
         bins.forEach((bin, index) => {
-            const barW = Math.min(54, slot * .62);
+            const barW = Math.min(62, slot * .88);
             const barH = bin.count / peak * plotH;
             const x = left + index * slot + (slot - barW) / 2;
             const y = top + plotH - barH;
-            const fill = bin.kind === "forfeit" ? "#9b6b45" :
-                bin.kind === "outlier" ? "#d6b85c" : "#3979ad";
+            let fill;
+            if (bin.kind === "forfeit") fill = "#9b6b45";
+            else if (bin.kind === "outlier") fill = "#d6b85c";
+            else fill = index % 2 === 0 ? "#3979ad" : "#c5a64b";
             svg.appendChild(svgNode("rect", { x, y, width: barW, height: barH, rx: 3, fill }));
+
             const count = svgNode("text", {
-                x: x + barW / 2, y: Math.max(top + 12, y - 6),
-                "text-anchor": "middle", fill: "currentColor", "font-size": 11
+                x: x + barW / 2, y: Math.max(top + 13, y - 7),
+                "text-anchor": "middle", fill: "currentColor", "font-size": 12,
+                "font-weight": "600"
             });
             count.textContent = String(bin.count);
             svg.appendChild(count);
+
+            const labelX = left + index * slot + slot / 2;
+            const labelY = top + plotH + 20;
             const xLabel = svgNode("text", {
-                x: left + index * slot + slot / 2, y: top + plotH + 20,
-                "text-anchor": "middle", fill: "currentColor", "font-size": 10
+                x: labelX, y: labelY,
+                "text-anchor": "end", fill: "currentColor", "font-size": 12
             });
             xLabel.textContent = bin.label;
-            xLabel.setAttribute("transform",
-                `rotate(-42 ${left + index * slot + slot / 2} ${top + plotH + 20})`);
+            xLabel.setAttribute("transform", `rotate(-48 ${labelX} ${labelY})`);
             svg.appendChild(xLabel);
         });
 
         const yTitle = svgNode("text", {
             x: 14, y: top + plotH / 2,
             transform: `rotate(-90 14 ${top + plotH / 2})`,
-            "text-anchor": "middle", fill: "currentColor", "font-size": 12
+            "text-anchor": "middle", fill: "currentColor", "font-size": 13
         });
         yTitle.textContent = "Number of bingos";
         svg.appendChild(yTitle);
@@ -391,11 +402,9 @@ async function loadPlayerProfile() {
         const wrap = el("div", "profile-chart-wrap");
         wrap.appendChild(svg);
         card.appendChild(wrap);
-        const intervalLabel = interval
-            ? `Regular bins use ${interval / 60}-minute intervals.`
-            : "No completed times to group.";
+        const intervalLabel = interval ? `${interval / 60}-minute regular bins.` : "";
         card.appendChild(el("p", "profile-muted",
-            `${intervalLabel} Empty bins at the beginning are omitted, gaps within the distribution are retained, and the slowest 10% are grouped into the final time+ bin.`));
+            `${intervalLabel} Bin labels show exclusive upper limits (for example, <1:17:30 includes times from 1:15:00 through 1:17:29). Empty bins within the distribution are retained; the slowest group is shown as a time+ bin.`));
     }
 
     function drawRecentTimes(parent, entries) {
