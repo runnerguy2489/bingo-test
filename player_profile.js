@@ -274,6 +274,42 @@ async function loadPlayerProfile() {
             return;
         }
 
+        // Normal bingo profiles use the agreed standard time thresholds when
+        // the player's results fit that distribution. Other types keep adaptive bins.
+        const useNormalThresholds = selectedType === "normal" &&
+            completed.some(time => time < 90 * 60) &&
+            completed.filter(time => time > 120 * 60).length / completed.length <= 0.25;
+
+        if (useNormalThresholds) {
+            const upperBounds = [65, 70, 75, 80, 85, 90, 95, 100, 110, 120].map(m => m * 60);
+            const bins = [];
+            if (forfeits > 0) bins.push({ label: "Forfeits", count: forfeits, kind: "forfeit" });
+            let lowerBound = 0;
+            upperBounds.forEach((upperBound, index) => {
+                const count = completed.filter(time => time >= lowerBound && time < upperBound).length;
+                bins.push({
+                    label: `<${formatBinTime(upperBound)}`,
+                    count,
+                    kind: "normal",
+                    colorIndex: index
+                });
+                lowerBound = upperBound;
+            });
+            const overflowCount = completed.filter(time => time >= 120 * 60).length;
+            if (overflowCount > 0) {
+                bins.push({
+                    label: "2:00+",
+                    count: overflowCount,
+                    kind: "normal",
+                    colorIndex: upperBounds.length
+                });
+            }
+            drawDistributionBars(card, bins, 300);
+            section.appendChild(card);
+            parent.appendChild(section);
+            return;
+        }
+
         // Use fixed-width bins, increasing the interval only as needed to keep
         // the regular distribution to about 12 bins. Forfeit and overflow bins
         // may add one or two more when those categories are present.
@@ -317,7 +353,8 @@ async function loadPlayerProfile() {
             bins.push({
                 label: `<${formatBinTime(upperBound)}`,
                 count: counts.get(index) || 0,
-                kind: "normal"
+                kind: "normal",
+                colorIndex: index - firstBinIndex
             });
         }
 
@@ -325,7 +362,8 @@ async function loadPlayerProfile() {
             bins.push({
                 label: `${formatBinTime(overflowBinIndex * interval)}+`,
                 count: overflowCount,
-                kind: "outlier"
+                kind: "normal",
+                colorIndex: overflowBinIndex - firstBinIndex
             });
         }
 
@@ -345,7 +383,7 @@ async function loadPlayerProfile() {
             viewBox: `0 0 ${width} ${height}`,
             class: "profile-chart",
             role: "img",
-            "aria-label": "Bingo count by fixed-width completion-time bins. Labels are exclusive upper bounds; the slowest times are grouped into a final overflow bin."
+            "aria-label": "Bingo count by completion-time bins. Labels are exclusive upper bounds; forfeit results are shown first."
         });
 
         for (let tick = 0; tick <= 4; tick++) {
@@ -370,8 +408,7 @@ async function loadPlayerProfile() {
             const y = top + plotH - barH;
             let fill;
             if (bin.kind === "forfeit") fill = "#9b6b45";
-            else if (bin.kind === "outlier") fill = "#d6b85c";
-            else fill = index % 2 === 0 ? "#3979ad" : "#c5a64b";
+            else fill = (bin.colorIndex ?? index) % 2 === 0 ? "#3979ad" : "#c5a64b";
             svg.appendChild(svgNode("rect", { x, y, width: barW, height: barH, rx: 0, fill }));
 
             const count = svgNode("text", {
