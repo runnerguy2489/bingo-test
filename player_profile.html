@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Player Profile | OoT Bingo Stats</title>
+    <style>
+        .profile-controls { display:flex; flex-wrap:wrap; gap:1.25rem; align-items:flex-start; margin:1.25rem 0; }
+        .profile-player-select { position:relative; width:min(100%, 360px); }
+        .profile-player-select label,.profile-control-label { display:block; font-weight:600; margin-bottom:.45rem; }
+        .profile-input-wrap { display:flex; gap:.35rem; }
+        .profile-input-wrap input { width:100%; min-width:0; padding:.65rem .75rem; border:1px solid var(--border-color,#bbb); border-radius:6px; }
+        .profile-clear { padding:0 .7rem; font-size:1.2rem; }
+        .profile-suggestions { position:absolute; z-index:20; top:100%; left:0; right:0; max-height:280px; overflow:auto; margin:.2rem 0 0; padding:0; list-style:none; background:var(--card-bg,#fff); border:1px solid var(--border-color,#bbb); border-radius:6px; box-shadow:0 5px 16px #0002; }
+        .profile-suggestion { padding:.55rem .7rem; cursor:pointer; }
+        .profile-suggestion:hover,.profile-suggestion.active { background:var(--hover-bg,#eee); }
+        .profile-no-suggestions { padding:.6rem .7rem; color:#777; }
+        .profile-type-select { min-width:170px; padding:.55rem; }
+        .profile-version-options { display:flex; flex-wrap:wrap; gap:.5rem .9rem; max-width:760px; }
+        .profile-version-options label { white-space:nowrap; }
+        .profile-version-list { display:flex; flex-wrap:wrap; gap:.5rem .9rem; }
+        .profile-version-all { flex-basis:100%; font-weight:600; }
+        .profile-status { margin:.75rem 0 1rem; color:var(--muted-text,#666); }
+        .profile-section { margin:1.5rem 0; }
+        .profile-section h3 { margin-bottom:.8rem; }
+        .profile-stat-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(145px,1fr)); gap:.75rem; }
+        .profile-stat-card { padding:1rem; border:1px solid var(--border-color,#ddd); border-radius:8px; background:var(--card-bg,transparent); min-width:0; }
+        .profile-stat-label { font-size:.82rem; color:var(--muted-text,#666); margin-bottom:.35rem; }
+        .profile-stat-value { font-size:1.35rem; font-weight:700; overflow-wrap:anywhere; }
+        .profile-chart-card { padding:1rem; border:1px solid var(--border-color,#ddd); border-radius:8px; margin:1rem 0; }
+        .profile-chart-wrap { width:100%; overflow-x:auto; }
+        .profile-chart { display:block; width:100%; min-width:620px; height:auto; }
+        .profile-chart-legend { display:flex; flex-wrap:wrap; gap:1rem; font-size:.9rem; margin-top:.5rem; }
+        .profile-legend-line { display:inline-block; width:24px; border-top:3px solid currentColor; vertical-align:middle; margin-right:.35rem; }
+        .profile-items-table { width:100%; border-collapse:collapse; }
+        .profile-items-table th,.profile-items-table td { text-align:left; padding:.55rem .7rem; border-bottom:1px solid var(--border-color,#ddd); }
+        .profile-items-table th:last-child,.profile-items-table td:last-child { text-align:right; }
+        .profile-muted { color:var(--muted-text,#666); }
+        .profile-empty { padding:1rem; text-align:center; color:var(--muted-text,#666); }
+        @media(max-width:650px) { .profile-controls { display:block; } .profile-controls > * { margin-bottom:1rem; } }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Ocarina of Time Bingo Statistics</h1>
+        <p>Historical race data, player statistics, and records.</p>
+        <nav class="site-nav" aria-label="Main navigation">
+            <a href="index.html">Monthly Races</a>
+            <a href="overall_stats.html">Overall Stats</a>
+            <a href="overall_player_stats.html">Overall Player Stats</a>
+            <a href="player_profile.html" class="active" aria-current="page">Player Profile</a>
+            <a href="head_to_head.html">Head-to-Head</a>
+        </nav>
+    </header>
+
+    <main>
+        <h2>Player Profile</h2>
+        <p class="h2h-intro">Career statistics, performance trends, and item choices for an individual player.</p>
+
+        <section class="profile-controls" aria-label="Player profile filters">
+            <div class="profile-player-select">
+                <label for="profile-player">Select player</label>
+                <div class="profile-input-wrap">
+                    <input id="profile-player" type="text" placeholder="Search players..." autocomplete="off"
+                        role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="profile-player-options">
+                    <button type="button" id="profile-clear" class="profile-clear" aria-label="Clear player" title="Clear">×</button>
+                </div>
+                <ul id="profile-player-options" class="profile-suggestions" role="listbox" hidden></ul>
+            </div>
+            <div>
+                <label class="profile-control-label" for="profile-type">Bingo type</label>
+                <select id="profile-type" class="profile-type-select">
+                    <option value="all">All</option>
+                    <option value="normal" selected>Normal</option>
+                    <option value="blackout">Blackout</option>
+                    <option value="short">Short</option>
+                    <option value="child">Child</option>
+                    <option value="double">Double</option>
+                    <option value="anti">Anti Bingo</option>
+                </select>
+            </div>
+            <div>
+                <div class="profile-control-label">Versions</div>
+                <div id="profile-versions" class="profile-version-options"></div>
+            </div>
+        </section>
+
+        <div id="profile-status" class="profile-status" aria-live="polite">Loading player profile data...</div>
+        <section id="profile-results" aria-live="polite"></section>
+    </main>
+    <script src="player_profile.js"></script>
+</body>
+</html>

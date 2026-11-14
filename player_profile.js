@@ -1,0 +1,550 @@
+async function loadPlayerProfile() {
+    const playerInput = document.getElementById("profile-player");
+    const clearButton = document.getElementById("profile-clear");
+    const suggestions = document.getElementById("profile-player-options");
+    const typeSelect = document.getElementById("profile-type");
+    const versionsContainer = document.getElementById("profile-versions");
+    const status = document.getElementById("profile-status");
+    const results = document.getElementById("profile-results");
+
+    const number = value => Number(value || 0).toLocaleString();
+    const isValidTime = value => typeof value === "number" && Number.isFinite(value);
+    const isBlankRowCol = value =>
+        value === null || value === undefined ||
+        (typeof value === "string" && ["", "---"].includes(value.trim()));
+
+    function el(tag, className, text) {
+        const node = document.createElement(tag);
+        if (className) node.className = className;
+        if (text !== undefined && text !== null) node.textContent = text;
+        return node;
+    }
+
+    function formatDuration(totalSeconds) {
+        if (totalSeconds === null || totalSeconds === undefined || !Number.isFinite(Number(totalSeconds))) return "—";
+        let remaining = Math.max(0, Math.floor(Number(totalSeconds)));
+        const units = [["y", 31536000], ["d", 86400], ["h", 3600], ["m", 60], ["s", 1]];
+        const parts = [];
+        for (const [label, seconds] of units) {
+            const amount = Math.floor(remaining / seconds);
+            if (amount > 0) {
+                parts.push(amount + label);
+                remaining %= seconds;
+            }
+        }
+        return parts.join(" ") || "0s";
+    }
+
+    function formatClock(seconds) {
+        if (!Number.isFinite(seconds)) return "—";
+        const total = Math.max(0, Math.round(seconds));
+        const h = Math.floor(total / 3600);
+        const m = Math.floor((total % 3600) / 60);
+        const s = total % 60;
+        return h ? `${h}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}` :
+            `${m}:${String(s).padStart(2, "0")}`;
+    }
+
+    let raceData = [];
+    let playerNames = [];
+    let selectedPlayer = "";
+    let selectedType = "normal";
+    let selectedVersions = new Set();
+
+    function racesForFilters() {
+        return raceData.filter(race =>
+            (selectedType === "all" || race.type === selectedType) &&
+            selectedVersions.has(String(race.version))
+        );
+    }
+
+    function getVersionsForType() {
+        return [...new Set(raceData
+            .filter(race => selectedType === "all" || race.type === selectedType)
+            .map(race => String(race.version)))]
+            .sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: "base" }));
+    }
+
+    function isBeta(version) {
+        return String(version).toLowerCase().startsWith("beta");
+    }
+
+    function renderVersions() {
+        versionsContainer.replaceChildren();
+        const versions = getVersionsForType();
+        const locked = selectedType === "all";
+        const beta = versions.filter(isBeta);
+        const regular = versions.filter(v => !isBeta(v));
+
+        const allLabel = el("label", "profile-version-all");
+        const all = document.createElement("input");
+        all.type = "checkbox";
+        all.checked = locked || (versions.length > 0 && versions.every(v => selectedVersions.has(v)));
+        all.disabled = locked;
+        all.addEventListener("change", () => {
+            selectedVersions = all.checked ? new Set(versions) : new Set();
+            renderVersions();
+            renderProfile();
+        });
+        allLabel.append(all, document.createTextNode(" All versions"));
+        versionsContainer.appendChild(allLabel);
+
+        function addVersionCheckbox(labelText, values, checked) {
+            const label = el("label");
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.checked = locked || checked;
+            checkbox.disabled = locked;
+            checkbox.addEventListener("change", () => {
+                values.forEach(v => checkbox.checked ? selectedVersions.add(v) : selectedVersions.delete(v));
+                renderVersions();
+                renderProfile();
+            });
+            label.append(checkbox, document.createTextNode(" " + labelText));
+            versionsContainer.appendChild(label);
+        }
+
+        if (beta.length) addVersionCheckbox("Beta versions", beta, beta.every(v => selectedVersions.has(v)));
+        regular.forEach(v => addVersionCheckbox(v, [v], selectedVersions.has(v)));
+        if (!versions.length) versionsContainer.appendChild(el("span", "profile-muted", "No versions found."));
+    }
+
+    function closeSuggestions() {
+        suggestions.hidden = true;
+        playerInput.setAttribute("aria-expanded", "false");
+        playerInput.removeAttribute("aria-activedescendant");
+    }
+
+    let visiblePlayers = [];
+    let activeIndex = -1;
+
+    function renderSuggestions() {
+        const query = playerInput.value.trim().toLocaleLowerCase();
+        const matching = playerNames.filter(name => !query || name.toLocaleLowerCase().includes(query));
+        visiblePlayers = query ? matching.slice(0, 12) : matching;
+        activeIndex = -1;
+        suggestions.replaceChildren();
+
+        if (!visiblePlayers.length) {
+            suggestions.appendChild(el("li", "profile-no-suggestions", query ? "No matching players" : "No players available"));
+        } else {
+            visiblePlayers.forEach((name, index) => {
+                const option = el("li", "profile-suggestion", name);
+                option.id = `profile-player-option-${index}`;
+                option.setAttribute("role", "option");
+                option.setAttribute("aria-selected", "false");
+                option.addEventListener("mousedown", event => event.preventDefault());
+                option.addEventListener("click", () => choosePlayer(name));
+                suggestions.appendChild(option);
+            });
+        }
+        suggestions.hidden = false;
+        playerInput.setAttribute("aria-expanded", "true");
+    }
+
+    function highlightSuggestion(index) {
+        const options = [...suggestions.querySelectorAll(".profile-suggestion")];
+        if (!options.length) return;
+        activeIndex = (index + options.length) % options.length;
+        options.forEach((option, i) => {
+            const active = i === activeIndex;
+            option.classList.toggle("active", active);
+            option.setAttribute("aria-selected", String(active));
+        });
+        playerInput.setAttribute("aria-activedescendant", options[activeIndex].id);
+        options[activeIndex].scrollIntoView({ block: "nearest" });
+    }
+
+    function choosePlayer(name) {
+        selectedPlayer = name;
+        playerInput.value = name;
+        closeSuggestions();
+        renderProfile();
+    }
+
+    function calculateStats(races, username) {
+        const player = {
+            bingosEntered: 0, completions: 0, forfeits: 0, wins: 0, top3Finishes: 0,
+            totalTimeSeconds: 0, times: [], blanks: 0, snipes: 0, sniped: 0
+        };
+
+        races.forEach(race => {
+            const timedPlayers = [];
+            (race.players || []).forEach(result => {
+                if (!result || typeof result.username !== "string" || !result.username.trim()) return;
+                if (result.username !== username) {
+                    if (isValidTime(result.timeSeconds)) timedPlayers.push({ username: result.username, timeSeconds: result.timeSeconds });
+                    return;
+                }
+
+                player.bingosEntered++;
+                if (!isValidTime(result.timeSeconds)) {
+                    player.forfeits++;
+                    return;
+                }
+
+                const rank = Number(result.rank);
+                if (rank === 1) player.wins++;
+                if (Number.isFinite(rank) && rank >= 1 && rank <= 3) player.top3Finishes++;
+                player.completions++;
+                player.totalTimeSeconds += result.timeSeconds;
+                player.times.push(result.timeSeconds);
+                timedPlayers.push({ username: result.username, timeSeconds: result.timeSeconds });
+                if (isBlankRowCol(result.rowCol)) player.blanks++;
+            });
+
+            // Match Overall Player Stats: each opponent within (but not exactly) 10 seconds counts.
+            const mine = timedPlayers.filter(p => p.username === username);
+            mine.forEach(me => {
+                timedPlayers.forEach(other => {
+                    if (other.username === username) return;
+                    const difference = Math.abs(me.timeSeconds - other.timeSeconds);
+                    if (difference > 0 && difference < 10) {
+                        if (me.timeSeconds < other.timeSeconds) player.snipes++;
+                        else player.sniped++;
+                    }
+                });
+            });
+        });
+
+        player.forfeits = player.bingosEntered - player.completions;
+        player.averageTimeSeconds = player.completions ? player.totalTimeSeconds / player.completions : null;
+        player.times.sort((a, b) => a - b);
+        player.bestTimeSeconds = player.times.length ? player.times[0] : null;
+        player.worstTimeSeconds = player.times.length ? player.times[player.times.length - 1] : null;
+        if (player.times.length) {
+            const mid = Math.floor(player.times.length / 2);
+            player.medianTimeSeconds = player.times.length % 2 === 0
+                ? (player.times[mid - 1] + player.times[mid]) / 2 : player.times[mid];
+        } else player.medianTimeSeconds = null;
+        player.completionPercent = player.bingosEntered ? player.completions / player.bingosEntered * 100 : 0;
+        return player;
+    }
+    function statCard(parent, label, value) {
+        const card = el("div", "profile-stat-card");
+        card.append(el("div", "profile-stat-label", label), el("div", "profile-stat-value", value));
+        parent.appendChild(card);
+    }
+
+    function svgNode(tag, attrs = {}) {
+        const node = document.createElementNS("http://www.w3.org/2000/svg", tag);
+        Object.entries(attrs).forEach(([key, value]) => node.setAttribute(key, String(value)));
+        return node;
+    }
+
+    function drawDistribution(parent, entries) {
+        const section = el("section", "profile-section");
+        section.appendChild(el("h3", "", "Time Distribution Chart"));
+        const card = el("div", "profile-chart-card");
+        const completed = entries.filter(e => isValidTime(e.result.timeSeconds)).map(e => e.result.timeSeconds);
+        const forfeits = entries.length - completed.length;
+        const max = completed.length ? Math.max(...completed) : 0;
+        const binSize = 600; // 10-minute bins
+        const binCount = completed.length ? Math.floor(max / binSize) + 1 : 0;
+        const labels = ["Forfeits"];
+        const values = [forfeits];
+        for (let i = 0; i < binCount; i++) {
+            labels.push(`${i * 10}–${i * 10 + 10}m`);
+            values.push(completed.filter(t => Math.floor(t / binSize) === i).length);
+        }
+
+        if (!entries.length) {
+            card.appendChild(el("p", "profile-empty", "No race entries for this player with the current filters."));
+            section.appendChild(card);
+            parent.appendChild(section);
+            return;
+        }
+
+        const width = Math.max(660, labels.length * 76 + 80), height = 330;
+        const left = 52, right = 18, top = 24, bottom = 78;
+        const plotW = width - left - right, plotH = height - top - bottom;
+        const peak = Math.max(1, ...values);
+        const svg = svgNode("svg", { viewBox: `0 0 ${width} ${height}`, class: "profile-chart", role: "img", "aria-label": "Bingo count by completion-time bin; forfeits are first." });
+
+        for (let tick = 0; tick <= 4; tick++) {
+            const y = top + plotH - plotH * tick / 4;
+            svg.appendChild(svgNode("line", { x1: left, y1: y, x2: width - right, y2: y, stroke: "currentColor", "stroke-opacity": ".16" }));
+            const label = svgNode("text", { x: left - 9, y: y + 4, "text-anchor": "end", fill: "currentColor", "font-size": 12 });
+            label.textContent = String(Math.round(peak * tick / 4));
+            svg.appendChild(label);
+        }
+
+        const slot = plotW / labels.length;
+        values.forEach((value, i) => {
+            const barW = Math.min(42, slot * .66);
+            const barH = value / peak * plotH;
+            const x = left + i * slot + (slot - barW) / 2;
+            const y = top + plotH - barH;
+            svg.appendChild(svgNode("rect", { x, y, width: barW, height: barH, rx: 3, fill: i === 0 ? "#9b6b45" : "#3979ad" }));
+            const count = svgNode("text", { x: x + barW / 2, y: Math.max(top + 12, y - 6), "text-anchor": "middle", fill: "currentColor", "font-size": 11 });
+            count.textContent = String(value);
+            svg.appendChild(count);
+            const xLabel = svgNode("text", { x: left + i * slot + slot / 2, y: top + plotH + 18, "text-anchor": "middle", fill: "currentColor", "font-size": 11 });
+            xLabel.textContent = labels[i];
+            xLabel.setAttribute("transform", `rotate(-35 ${left + i * slot + slot / 2} ${top + plotH + 18})`);
+            svg.appendChild(xLabel);
+        });
+
+        const yTitle = svgNode("text", { x: 14, y: top + plotH / 2, transform: `rotate(-90 14 ${top + plotH / 2})`, "text-anchor": "middle", fill: "currentColor", "font-size": 12 });
+        yTitle.textContent = "Number of bingos";
+        svg.appendChild(yTitle);
+        card.appendChild(el("div", "profile-chart-wrap"));
+        card.querySelector(".profile-chart-wrap").appendChild(svg);
+        card.appendChild(el("p", "profile-muted", "Completed times are grouped into 10-minute bins. Forfeits are shown as the first bin."));
+        section.appendChild(card);
+        parent.appendChild(section);
+    }
+
+    function drawRecentTimes(parent, entries) {
+        const section = el("section", "profile-section");
+        section.appendChild(el("h3", "", "Recent Performance — Last 50 Races"));
+        const card = el("div", "profile-chart-card");
+        const recent = entries.slice().sort((a, b) =>
+            (Date.parse(a.race.date || "") || 0) - (Date.parse(b.race.date || "") || 0) ||
+            Number(a.race.raceId || 0) - Number(b.race.raceId || 0)
+        ).slice(-50);
+
+        if (!recent.length) {
+            card.appendChild(el("p", "profile-empty", "No race entries for this player with the current filters."));
+            section.appendChild(card);
+            parent.appendChild(section);
+            return;
+        }
+
+        const points = recent.map((entry, index) => ({
+            x: index,
+            y: isValidTime(entry.result.timeSeconds) ? entry.result.timeSeconds : null
+        }));
+        const valid = points.filter(p => p.y !== null);
+        if (!valid.length) {
+            card.appendChild(el("p", "profile-empty", "The player's last 50 filtered races contain no completed times."));
+            section.appendChild(card);
+            parent.appendChild(section);
+            return;
+        }
+
+        const width = Math.max(760, recent.length * 20 + 100), height = 390;
+        const left = 68, right = 24, top = 24, bottom = 64;
+        const plotW = width - left - right, plotH = height - top - bottom;
+        const minY = Math.min(...valid.map(p => p.y));
+        const maxY = Math.max(...valid.map(p => p.y));
+        const pad = Math.max(300, (maxY - minY) * .12);
+        const low = Math.max(0, minY - pad), high = maxY + pad;
+        const x = i => left + (recent.length <= 1 ? .5 : i / (recent.length - 1)) * plotW;
+        const y = v => top + (high - v) / (high - low || 1) * plotH;
+
+        const svg = svgNode("svg", { viewBox: `0 0 ${width} ${height}`, class: "profile-chart", role: "img", "aria-label": "Completion times across the player's last 50 races, with overall trend and five-race moving average." });
+        for (let tick = 0; tick <= 4; tick++) {
+            const value = low + (high - low) * tick / 4;
+            const yy = y(value);
+            svg.appendChild(svgNode("line", { x1: left, y1: yy, x2: width - right, y2: yy, stroke: "currentColor", "stroke-opacity": ".16" }));
+            const label = svgNode("text", { x: left - 8, y: yy + 4, "text-anchor": "end", fill: "currentColor", "font-size": 12 });
+            label.textContent = formatClock(value);
+            svg.appendChild(label);
+        }
+
+        // Overall least-squares trend against race index (completed results only).
+        const meanX = valid.reduce((s, p) => s + p.x, 0) / valid.length;
+        const meanY = valid.reduce((s, p) => s + p.y, 0) / valid.length;
+        const denominator = valid.reduce((s, p) => s + (p.x - meanX) ** 2, 0);
+        const slope = denominator ? valid.reduce((s, p) => s + (p.x - meanX) * (p.y - meanY), 0) / denominator : 0;
+        const intercept = meanY - slope * meanX;
+        svg.appendChild(svgNode("line", { x1: x(0), y1: y(intercept), x2: x(recent.length - 1), y2: y(intercept + slope * (recent.length - 1)), stroke: "#d97706", "stroke-width": 2.5, "stroke-dasharray": "7 5" }));
+
+        // Five-completion moving average, retaining race order and skipping forfeits.
+        const moving = [];
+        let window = [];
+        points.forEach(point => {
+            if (point.y !== null) window.push(point.y);
+            if (window.length > 5) window.shift();
+            if (point.y !== null && window.length === 5) {
+                moving.push({ x: point.x, y: window.reduce((a, b) => a + b, 0) / window.length });
+            }
+        });
+        if (moving.length) {
+            const path = moving.map((p, i) => `${i ? "L" : "M"} ${x(p.x)} ${y(p.y)}`).join(" ");
+            svg.appendChild(svgNode("path", { d: path, fill: "none", stroke: "#15966b", "stroke-width": 3 }));
+        }
+
+        const rawPath = [];
+        points.forEach(p => {
+            if (p.y === null) rawPath.push(null);
+            else rawPath.push({ x: x(p.x), y: y(p.y) });
+        });
+        let segment = [];
+        const flush = () => {
+            if (segment.length > 1) {
+                svg.appendChild(svgNode("path", { d: segment.map((p, i) => `${i ? "L" : "M"} ${p.x} ${p.y}`).join(" "), fill: "none", stroke: "#3979ad", "stroke-width": 1.5, "stroke-opacity": ".65" }));
+            }
+            segment = [];
+        };
+        rawPath.forEach(p => { if (!p) flush(); else segment.push(p); });
+        flush();
+
+        points.forEach(p => {
+            if (p.y === null) {
+                svg.appendChild(svgNode("path", { d: `M ${x(p.x)-3} ${top+plotH+7} l 6 6 m -6 0 l 6 -6`, stroke: "#9b6b45", "stroke-width": 1.5 }));
+            } else {
+                svg.appendChild(svgNode("circle", { cx: x(p.x), cy: y(p.y), r: 3.2, fill: "#3979ad" }));
+            }
+        });
+
+        const xTitle = svgNode("text", { x: left + plotW / 2, y: height - 8, "text-anchor": "middle", fill: "currentColor", "font-size": 12 });
+        xTitle.textContent = "Race order (oldest on the left)";
+        svg.appendChild(xTitle);
+        const yTitle = svgNode("text", { x: 15, y: top + plotH / 2, transform: `rotate(-90 15 ${top + plotH / 2})`, "text-anchor": "middle", fill: "currentColor", "font-size": 12 });
+        yTitle.textContent = "Completion time";
+        svg.appendChild(yTitle);
+
+        const wrap = el("div", "profile-chart-wrap");
+        wrap.appendChild(svg);
+        card.appendChild(wrap);
+        const legend = el("div", "profile-chart-legend");
+        legend.innerHTML = '<span><i class="profile-legend-line" style="color:#3979ad"></i>Race times</span><span><i class="profile-legend-line" style="color:#d97706;border-top-style:dashed"></i>Overall trend</span><span><i class="profile-legend-line" style="color:#15966b"></i>5-completion moving average</span><span>× Forfeit</span>';
+        card.appendChild(legend);
+        card.appendChild(el("p", "profile-muted", `${recent.length} most recent race entries are shown, ordered oldest to newest. Forfeits are marked on the bottom axis; trend calculations use completed races only.`));
+        section.appendChild(card);
+        parent.appendChild(section);
+    }
+    function drawTopItems(parent, entries) {
+        const counts = new Map();
+        entries.forEach(entry => {
+            (entry.result.selectedItems || []).forEach(item => {
+                if (typeof item === "string" && item.trim()) counts.set(item, (counts.get(item) || 0) + 1);
+            });
+        });
+        const top = [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).slice(0, 5);
+        const section = el("section", "profile-section");
+        section.appendChild(el("h3", "", "Top 5 Item Choices"));
+        if (!top.length) {
+            section.appendChild(el("p", "profile-muted", "No recorded item selections for this player under the current filters."));
+            parent.appendChild(section);
+            return;
+        }
+        const table = el("table", "profile-items-table");
+        const thead = document.createElement("thead");
+        const header = document.createElement("tr");
+        header.append(el("th", "", "Selected goal"), el("th", "", "Times selected"));
+        thead.appendChild(header);
+        table.appendChild(thead);
+        const tbody = document.createElement("tbody");
+        top.forEach(([item, count], index) => {
+            const row = document.createElement("tr");
+            row.append(el("td", "", `${index + 1}. ${item}`), el("td", "", number(count)));
+            tbody.appendChild(row);
+        });
+        table.appendChild(tbody);
+        section.appendChild(table);
+        parent.appendChild(section);
+    }
+
+    function renderProfile() {
+        results.replaceChildren();
+        if (!selectedPlayer) {
+            status.textContent = "Select a player to view their profile.";
+            return;
+        }
+
+        const races = racesForFilters();
+        const entries = [];
+        races.forEach(race => {
+            (race.players || []).forEach(result => {
+                if (result && result.username === selectedPlayer) entries.push({ race, result });
+            });
+        });
+
+        const stats = calculateStats(races, selectedPlayer);
+        status.textContent = `${selectedPlayer} · ${number(entries.length)} race entries · ${number(races.length)} races included by filters`;
+
+        const statGrid = el("div", "profile-stat-grid");
+        const statValues = [
+            ["Bingos Entered", number(stats.bingosEntered)],
+            ["Completed", number(stats.completions)],
+            ["Forfeits", number(stats.forfeits)],
+            ["Completion Percentage", stats.completionPercent.toFixed(2) + "%"],
+            ["Wins", number(stats.wins)],
+            ["Top 3 Finishes", number(stats.top3Finishes)],
+            ["Total Time", formatDuration(stats.totalTimeSeconds)],
+            ["Best Time", formatDuration(stats.bestTimeSeconds)],
+            ["Worst Time", formatDuration(stats.worstTimeSeconds)],
+            ["Average Time", formatDuration(stats.averageTimeSeconds)],
+            ["Median Time", formatDuration(stats.medianTimeSeconds)],
+            ["Blanks", number(stats.blanks)],
+            ["Snipes", number(stats.snipes)],
+            ["Sniped", number(stats.sniped)]
+        ];
+        statValues.forEach(([label, value]) => statCard(statGrid, label, value));
+        results.appendChild(statGrid);
+
+        drawDistribution(results, entries);
+        drawRecentTimes(results, entries);
+        drawTopItems(results, entries);
+    }
+
+    try {
+        const response = await fetch("player_profile_stats.json");
+        if (!response.ok) throw new Error("Could not load player_profile_stats.json.");
+        const data = await response.json();
+        if (!Array.isArray(data.races)) throw new Error('The JSON file does not contain a "races" array.');
+
+        raceData = data.races.filter(race => race && typeof race.type === "string" && Array.isArray(race.players));
+        const names = new Set();
+        raceData.forEach(race => race.players.forEach(player => {
+            if (player && typeof player.username === "string" && player.username.trim()) names.add(player.username);
+        }));
+        playerNames = [...names].sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base", numeric: true }));
+
+        const availableTypes = new Set(raceData.map(race => race.type));
+        if (!availableTypes.has(selectedType)) selectedType = [...availableTypes][0] || "all";
+        typeSelect.value = selectedType;
+        selectedVersions = new Set(getVersionsForType());
+        renderVersions();
+
+        playerInput.addEventListener("focus", renderSuggestions);
+        playerInput.addEventListener("input", () => {
+            selectedPlayer = "";
+            renderSuggestions();
+            renderProfile();
+        });
+        playerInput.addEventListener("keydown", event => {
+            if (event.key === "ArrowDown") {
+                event.preventDefault();
+                if (suggestions.hidden) renderSuggestions();
+                highlightSuggestion(activeIndex + 1);
+            } else if (event.key === "ArrowUp") {
+                event.preventDefault();
+                if (suggestions.hidden) renderSuggestions();
+                highlightSuggestion(activeIndex - 1);
+            } else if (event.key === "Enter" && !suggestions.hidden && activeIndex >= 0) {
+                event.preventDefault();
+                choosePlayer(visiblePlayers[activeIndex]);
+            } else if (event.key === "Escape") closeSuggestions();
+        });
+        clearButton.addEventListener("click", () => {
+            playerInput.value = "";
+            selectedPlayer = "";
+            closeSuggestions();
+            playerInput.focus();
+            renderProfile();
+        });
+        document.addEventListener("click", event => {
+            if (!event.target.closest(".profile-player-select")) closeSuggestions();
+        });
+
+        typeSelect.addEventListener("change", () => {
+            selectedType = typeSelect.value;
+            selectedVersions = new Set(getVersionsForType());
+            renderVersions();
+            renderProfile();
+        });
+
+        status.textContent = `Loaded ${number(data.raceCount ?? raceData.length)} races and ${number(playerNames.length)} players. Select a player to view their profile.`;
+        renderProfile();
+    } catch (error) {
+        status.textContent = "Unable to load player profile data.";
+        results.replaceChildren(el("p", "h2h-error", error.message));
+        console.error(error);
+    }
+}
+
+loadPlayerProfile();
