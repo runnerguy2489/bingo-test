@@ -236,7 +236,7 @@ async function loadPlayerProfile() {
         const totalMinutes = Math.max(0, Math.floor(seconds / 60));
         const hours = Math.floor(totalMinutes / 60);
         const minutes = totalMinutes % 60;
-        return `${hours} HR: ${String(minutes).padStart(2, "0")} MIN`;
+        return `${hours}:${String(minutes).padStart(2, "0")}`;
     }
 
     function percentile(sorted, fraction) {
@@ -265,66 +265,72 @@ async function loadPlayerProfile() {
             return;
         }
 
-        // Quantile-based bins adapt to the player's actual time distribution.
-        // Identical times stay together; the slowest 5% are grouped into one overflow bin.
-        const cutoff = completed.length >= 20 ? percentile(completed, 0.95) : completed[completed.length - 1];
-        const regularTimes = completed.filter(time => time <= cutoff);
-        const outlierTimes = completed.filter(time => time > cutoff);
-        const targetBinCount = Math.min(10, Math.max(1, Math.ceil(Math.sqrt(regularTimes.length))));
-        const frequencies = [];
-        regularTimes.forEach(time => {
-            const last = frequencies[frequencies.length - 1];
-            if (last && last.time === time) last.count++;
-            else frequencies.push({ time, count: 1 });
-        });
-
-        const regularBins = [];
-        const targetCount = regularTimes.length / targetBinCount;
-        let current = null;
-        let accumulated = 0;
-        frequencies.forEach((frequency, index) => {
-            if (!current) current = { min: frequency.time, max: frequency.time, count: 0 };
-            current.max = frequency.time;
-            current.count += frequency.count;
-            accumulated += frequency.count;
-            const binsLeft = targetBinCount - regularBins.length;
-            const remainingValues = frequencies.length - index - 1;
-            if (regularBins.length < targetBinCount - 1 &&
-                accumulated >= targetCount &&
-                remainingValues >= binsLeft - 1) {
-                regularBins.push(current);
-                current = null;
-                accumulated = 0;
-            }
-        });
-        if (current) regularBins.push(current);
-
-        const bins = [];
-        if (forfeits > 0) bins.push({ label: "Forfeits", count: forfeits, kind: "forfeit" });
-        regularBins.forEach(bin => {
-            const first = formatBinTime(bin.min);
-            const last = formatBinTime(bin.max);
-            bins.push({
-                label: first === last ? first : `${first}–${last}`,
-                count: bin.count,
-                kind: "normal"
-            });
-        });
-        if (outlierTimes.length) {
-            bins.push({
-                label: `${formatBinTime(cutoff)}+`,
-                count: outlierTimes.length,
-                kind: "outlier"
-            });
-        }
-        if (!bins.length) {
-            card.appendChild(el("p", "profile-empty", "No completed times or forfeits to chart."));
+        if (!completed.length) {
+            const bins = [{ label: "Forfeits", count: forfeits, kind: "forfeit" }];
+            drawDistributionBars(card, bins);
             section.appendChild(card);
             parent.appendChild(section);
             return;
         }
 
-        const width = Math.max(660, bins.length * 94 + 90), height = 350;
+        // Keep ordinary bins at a consistent interval. Increase the interval only
+        // when needed to keep the main 90% of times to a readable number of bins.
+        const intervals = [150, 300, 600, 1200]; // 2.5, 5, 10, or 20 minutes
+        const p90 = percentile(completed, 0.90);
+        let interval = intervals[intervals.length - 1];
+        for (const candidate of intervals) {
+            const first = Math.floor(completed[0] / candidate);
+            const last = Math.floor(p90 / candidate);
+            if (last - first + 1 <= 16) {
+                interval = candidate;
+                break;
+            }
+        }
+
+        const firstBin = Math.floor(completed[0] / interval);
+        const overflowBin = Math.floor(p90 / interval);
+        const counts = new Map();
+        let overflowCount = 0;
+
+        completed.forEach(time => {
+            const binIndex = Math.floor(time / interval);
+            if (binIndex >= overflowBin) {
+                overflowCount++;
+            } else {
+                counts.set(binIndex, (counts.get(binIndex) || 0) + 1);
+            }
+        });
+
+        const bins = [];
+        if (forfeits > 0) bins.push({ label: "Forfeits", count: forfeits, kind: "forfeit" });
+
+        // Start at the first occupied bin, so empty bins before the data are omitted.
+        // Empty bins between the first occupied bin and the overflow bin are retained.
+        for (let index = firstBin; index < overflowBin; index++) {
+            const start = index * interval;
+            const end = start + interval;
+            bins.push({
+                label: `${formatBinTime(start)}–${formatBinTime(end)}`,
+                count: counts.get(index) || 0,
+                kind: "normal"
+            });
+        }
+
+        if (overflowCount > 0) {
+            bins.push({
+                label: `${formatBinTime(overflowBin * interval)}+`,
+                count: overflowCount,
+                kind: "outlier"
+            });
+        }
+
+        drawDistributionBars(card, bins, interval);
+        section.appendChild(card);
+        parent.appendChild(section);
+    }
+
+    function drawDistributionBars(card, bins, interval) {
+        const width = Math.max(660, bins.length * 86 + 90), height = 350;
         const left = 58, right = 18, top = 24, bottom = 104;
         const plotW = width - left - right, plotH = height - top - bottom;
         const peak = Math.max(1, ...bins.map(bin => bin.count));
@@ -332,7 +338,7 @@ async function loadPlayerProfile() {
             viewBox: `0 0 ${width} ${height}`,
             class: "profile-chart",
             role: "img",
-            "aria-label": "Bingo count by adaptive completion-time bins; forfeits appear first."
+            "aria-label": "Bingo count by fixed-width completion-time bins; forfeits appear first and the slowest ten percent are grouped into an overflow bin."
         });
 
         for (let tick = 0; tick <= 4; tick++) {
@@ -385,10 +391,11 @@ async function loadPlayerProfile() {
         const wrap = el("div", "profile-chart-wrap");
         wrap.appendChild(svg);
         card.appendChild(wrap);
+        const intervalLabel = interval
+            ? `Regular bins use ${interval / 60}-minute intervals.`
+            : "No completed times to group.";
         card.appendChild(el("p", "profile-muted",
-            "Completion times are grouped into adaptive, roughly equal-count bins. Empty ranges are omitted; the slowest 5% are grouped into a time+ bin when enough results are available."));
-        section.appendChild(card);
-        parent.appendChild(section);
+            `${intervalLabel} Empty bins at the beginning are omitted, gaps within the distribution are retained, and the slowest 10% are grouped into the final time+ bin.`));
     }
 
     function drawRecentTimes(parent, entries) {
@@ -461,20 +468,6 @@ async function loadPlayerProfile() {
             const path = moving.map((p, i) => `${i ? "L" : "M"} ${x(p.x)} ${y(p.y)}`).join(" ");
             svg.appendChild(svgNode("path", { d: path, fill: "none", stroke: "#15966b", "stroke-width": 3 }));
         }
-
-        points.forEach(p => {
-            if (p.y === null) rawPath.push(null);
-            else rawPath.push({ x: x(p.x), y: y(p.y) });
-        });
-        let segment = [];
-        const flush = () => {
-            if (segment.length > 1) {
-                svg.appendChild(svgNode("path", { d: segment.map((p, i) => `${i ? "L" : "M"} ${p.x} ${p.y}`).join(" "), fill: "none", stroke: "#3979ad", "stroke-width": 1.5, "stroke-opacity": ".65" }));
-            }
-            segment = [];
-        };
-        rawPath.forEach(p => { if (!p) flush(); else segment.push(p); });
-        flush();
 
         points.forEach(p => {
             if (p.y === null) {
