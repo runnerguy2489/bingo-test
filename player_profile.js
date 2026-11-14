@@ -232,21 +232,31 @@ async function loadPlayerProfile() {
         return node;
     }
 
+    function formatBinTime(seconds) {
+        const totalMinutes = Math.max(0, Math.floor(seconds / 60));
+        const hours = Math.floor(totalMinutes / 60);
+        const minutes = totalMinutes % 60;
+        return `${hours} HR: ${String(minutes).padStart(2, "0")} MIN`;
+    }
+
+    function percentile(sorted, fraction) {
+        if (!sorted.length) return 0;
+        const position = (sorted.length - 1) * fraction;
+        const lower = Math.floor(position);
+        const upper = Math.ceil(position);
+        if (lower === upper) return sorted[lower];
+        return sorted[lower] + (sorted[upper] - sorted[lower]) * (position - lower);
+    }
+
     function drawDistribution(parent, entries) {
         const section = el("section", "profile-section");
         section.appendChild(el("h3", "", "Time Distribution Chart"));
         const card = el("div", "profile-chart-card");
-        const completed = entries.filter(e => isValidTime(e.result.timeSeconds)).map(e => e.result.timeSeconds);
+        const completed = entries
+            .filter(e => isValidTime(e.result.timeSeconds))
+            .map(e => e.result.timeSeconds)
+            .sort((a, b) => a - b);
         const forfeits = entries.length - completed.length;
-        const max = completed.length ? Math.max(...completed) : 0;
-        const binSize = 600; // 10-minute bins
-        const binCount = completed.length ? Math.floor(max / binSize) + 1 : 0;
-        const labels = ["Forfeits"];
-        const values = [forfeits];
-        for (let i = 0; i < binCount; i++) {
-            labels.push(`${i * 10}–${i * 10 + 10}m`);
-            values.push(completed.filter(t => Math.floor(t / binSize) === i).length);
-        }
 
         if (!entries.length) {
             card.appendChild(el("p", "profile-empty", "No race entries for this player with the current filters."));
@@ -255,42 +265,128 @@ async function loadPlayerProfile() {
             return;
         }
 
-        const width = Math.max(660, labels.length * 76 + 80), height = 330;
-        const left = 52, right = 18, top = 24, bottom = 78;
+        // Quantile-based bins adapt to the player's actual time distribution.
+        // Identical times stay together; the slowest 5% are grouped into one overflow bin.
+        const cutoff = completed.length >= 20 ? percentile(completed, 0.95) : completed[completed.length - 1];
+        const regularTimes = completed.filter(time => time <= cutoff);
+        const outlierTimes = completed.filter(time => time > cutoff);
+        const targetBinCount = Math.min(10, Math.max(1, Math.ceil(Math.sqrt(regularTimes.length))));
+        const frequencies = [];
+        regularTimes.forEach(time => {
+            const last = frequencies[frequencies.length - 1];
+            if (last && last.time === time) last.count++;
+            else frequencies.push({ time, count: 1 });
+        });
+
+        const regularBins = [];
+        const targetCount = regularTimes.length / targetBinCount;
+        let current = null;
+        let accumulated = 0;
+        frequencies.forEach((frequency, index) => {
+            if (!current) current = { min: frequency.time, max: frequency.time, count: 0 };
+            current.max = frequency.time;
+            current.count += frequency.count;
+            accumulated += frequency.count;
+            const binsLeft = targetBinCount - regularBins.length;
+            const remainingValues = frequencies.length - index - 1;
+            if (regularBins.length < targetBinCount - 1 &&
+                accumulated >= targetCount &&
+                remainingValues >= binsLeft - 1) {
+                regularBins.push(current);
+                current = null;
+                accumulated = 0;
+            }
+        });
+        if (current) regularBins.push(current);
+
+        const bins = [];
+        if (forfeits > 0) bins.push({ label: "Forfeits", count: forfeits, kind: "forfeit" });
+        regularBins.forEach(bin => {
+            const first = formatBinTime(bin.min);
+            const last = formatBinTime(bin.max);
+            bins.push({
+                label: first === last ? first : `${first}–${last}`,
+                count: bin.count,
+                kind: "normal"
+            });
+        });
+        if (outlierTimes.length) {
+            bins.push({
+                label: `${formatBinTime(cutoff)}+`,
+                count: outlierTimes.length,
+                kind: "outlier"
+            });
+        }
+        if (!bins.length) {
+            card.appendChild(el("p", "profile-empty", "No completed times or forfeits to chart."));
+            section.appendChild(card);
+            parent.appendChild(section);
+            return;
+        }
+
+        const width = Math.max(660, bins.length * 94 + 90), height = 350;
+        const left = 58, right = 18, top = 24, bottom = 104;
         const plotW = width - left - right, plotH = height - top - bottom;
-        const peak = Math.max(1, ...values);
-        const svg = svgNode("svg", { viewBox: `0 0 ${width} ${height}`, class: "profile-chart", role: "img", "aria-label": "Bingo count by completion-time bin; forfeits are first." });
+        const peak = Math.max(1, ...bins.map(bin => bin.count));
+        const svg = svgNode("svg", {
+            viewBox: `0 0 ${width} ${height}`,
+            class: "profile-chart",
+            role: "img",
+            "aria-label": "Bingo count by adaptive completion-time bins; forfeits appear first."
+        });
 
         for (let tick = 0; tick <= 4; tick++) {
             const y = top + plotH - plotH * tick / 4;
-            svg.appendChild(svgNode("line", { x1: left, y1: y, x2: width - right, y2: y, stroke: "currentColor", "stroke-opacity": ".16" }));
-            const label = svgNode("text", { x: left - 9, y: y + 4, "text-anchor": "end", fill: "currentColor", "font-size": 12 });
+            svg.appendChild(svgNode("line", {
+                x1: left, y1: y, x2: width - right, y2: y,
+                stroke: "currentColor", "stroke-opacity": ".16"
+            }));
+            const label = svgNode("text", {
+                x: left - 9, y: y + 4, "text-anchor": "end",
+                fill: "currentColor", "font-size": 12
+            });
             label.textContent = String(Math.round(peak * tick / 4));
             svg.appendChild(label);
         }
 
-        const slot = plotW / labels.length;
-        values.forEach((value, i) => {
-            const barW = Math.min(42, slot * .66);
-            const barH = value / peak * plotH;
-            const x = left + i * slot + (slot - barW) / 2;
+        const slot = plotW / bins.length;
+        bins.forEach((bin, index) => {
+            const barW = Math.min(54, slot * .62);
+            const barH = bin.count / peak * plotH;
+            const x = left + index * slot + (slot - barW) / 2;
             const y = top + plotH - barH;
-            svg.appendChild(svgNode("rect", { x, y, width: barW, height: barH, rx: 3, fill: i === 0 ? "#9b6b45" : "#3979ad" }));
-            const count = svgNode("text", { x: x + barW / 2, y: Math.max(top + 12, y - 6), "text-anchor": "middle", fill: "currentColor", "font-size": 11 });
-            count.textContent = String(value);
+            const fill = bin.kind === "forfeit" ? "#9b6b45" :
+                bin.kind === "outlier" ? "#d6b85c" : "#3979ad";
+            svg.appendChild(svgNode("rect", { x, y, width: barW, height: barH, rx: 3, fill }));
+            const count = svgNode("text", {
+                x: x + barW / 2, y: Math.max(top + 12, y - 6),
+                "text-anchor": "middle", fill: "currentColor", "font-size": 11
+            });
+            count.textContent = String(bin.count);
             svg.appendChild(count);
-            const xLabel = svgNode("text", { x: left + i * slot + slot / 2, y: top + plotH + 18, "text-anchor": "middle", fill: "currentColor", "font-size": 11 });
-            xLabel.textContent = labels[i];
-            xLabel.setAttribute("transform", `rotate(-35 ${left + i * slot + slot / 2} ${top + plotH + 18})`);
+            const xLabel = svgNode("text", {
+                x: left + index * slot + slot / 2, y: top + plotH + 20,
+                "text-anchor": "middle", fill: "currentColor", "font-size": 10
+            });
+            xLabel.textContent = bin.label;
+            xLabel.setAttribute("transform",
+                `rotate(-42 ${left + index * slot + slot / 2} ${top + plotH + 20})`);
             svg.appendChild(xLabel);
         });
 
-        const yTitle = svgNode("text", { x: 14, y: top + plotH / 2, transform: `rotate(-90 14 ${top + plotH / 2})`, "text-anchor": "middle", fill: "currentColor", "font-size": 12 });
+        const yTitle = svgNode("text", {
+            x: 14, y: top + plotH / 2,
+            transform: `rotate(-90 14 ${top + plotH / 2})`,
+            "text-anchor": "middle", fill: "currentColor", "font-size": 12
+        });
         yTitle.textContent = "Number of bingos";
         svg.appendChild(yTitle);
-        card.appendChild(el("div", "profile-chart-wrap"));
-        card.querySelector(".profile-chart-wrap").appendChild(svg);
-        card.appendChild(el("p", "profile-muted", "Completed times are grouped into 10-minute bins. Forfeits are shown as the first bin."));
+
+        const wrap = el("div", "profile-chart-wrap");
+        wrap.appendChild(svg);
+        card.appendChild(wrap);
+        card.appendChild(el("p", "profile-muted",
+            "Completion times are grouped into adaptive, roughly equal-count bins. Empty ranges are omitted; the slowest 5% are grouped into a time+ bin when enough results are available."));
         section.appendChild(card);
         parent.appendChild(section);
     }
@@ -366,7 +462,6 @@ async function loadPlayerProfile() {
             svg.appendChild(svgNode("path", { d: path, fill: "none", stroke: "#15966b", "stroke-width": 3 }));
         }
 
-        const rawPath = [];
         points.forEach(p => {
             if (p.y === null) rawPath.push(null);
             else rawPath.push({ x: x(p.x), y: y(p.y) });
@@ -456,6 +551,7 @@ async function loadPlayerProfile() {
         const stats = calculateStats(races, selectedPlayer);
         status.textContent = `${selectedPlayer} · ${number(entries.length)} race entries · ${number(races.length)} races included by filters`;
 
+        const overview = el("div", "profile-overview-layout");
         const statGrid = el("div", "profile-stat-grid");
         const statValues = [
             ["Bingos Entered", number(stats.bingosEntered)],
@@ -474,11 +570,12 @@ async function loadPlayerProfile() {
             ["Sniped", number(stats.sniped)]
         ];
         statValues.forEach(([label, value]) => statCard(statGrid, label, value));
-        results.appendChild(statGrid);
+        overview.appendChild(statGrid);
+        drawTopItems(overview, entries);
+        results.appendChild(overview);
 
         drawDistribution(results, entries);
         drawRecentTimes(results, entries);
-        drawTopItems(results, entries);
     }
 
     try {
