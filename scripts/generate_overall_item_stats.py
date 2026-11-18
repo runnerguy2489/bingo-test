@@ -10,8 +10,9 @@ from pathlib import Path
 # SETTINGS
 # ============================================================
 
-INPUT_FILE = "bingo_races_filtered.json"
-OUTPUT_FILE = "overall_item_stats.json"
+DATA_DIR = Path(__file__).resolve().parent.parent / "data"
+INPUT_FILE = str(DATA_DIR / "bingo_races_filtered.json")
+OUTPUT_FILE = str(DATA_DIR / "overall_item_stats.json")
 
 # Target time in seconds.
 # 75 * 60 = 1 hour, 15 minutes, 0 seconds.

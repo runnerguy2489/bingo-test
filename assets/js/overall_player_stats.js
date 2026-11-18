@@ -567,7 +567,7 @@ async function loadOverallPlayerStats() {
     }
 
     try {
-        const response = await fetch("player_race_data.json");
+        const response = await fetch("data/player_race_data.json");
         if (!response.ok) throw new Error("Could not load player_race_data.json.");
 
         const data = await response.json();

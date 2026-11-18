@@ -231,7 +231,7 @@ async function loadHeadToHead() {
     }
 
     try {
-        const response = await fetch("head_to_head.json");
+        const response = await fetch("data/head_to_head.json");
         if (!response.ok) throw new Error("Could not load head_to_head.json.");
         const data = await response.json();
 

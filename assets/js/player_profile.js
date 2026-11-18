@@ -629,7 +629,7 @@ async function loadPlayerProfile() {
     }
 
     try {
-        const response = await fetch("player_profile_stats.json");
+        const response = await fetch("data/player_profile_stats.json");
         if (!response.ok) throw new Error("Could not load player_profile_stats.json.");
         const data = await response.json();
         if (!Array.isArray(data.races)) throw new Error('The JSON file does not contain a "races" array.');

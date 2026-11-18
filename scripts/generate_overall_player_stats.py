@@ -27,8 +27,9 @@ from collections import defaultdict
 from pathlib import Path
 
 
-DEFAULT_INPUT = "bingo_races_filtered.json"
-DEFAULT_OUTPUT = "overall_player_stats.json"
+DATA_DIR = Path(__file__).resolve().parent.parent / "data"
+DEFAULT_INPUT = str(DATA_DIR / "bingo_races_filtered.json")
+DEFAULT_OUTPUT = str(DATA_DIR / "overall_player_stats.json")
 
 
 def is_completed(result):
@@ -143,7 +144,7 @@ def main():
     if not input_path.exists():
         raise FileNotFoundError(
             f"Could not find {input_path}. "
-            "Place the input JSON in the same folder as this script "
+            "Place the input JSON in the repository data/ folder "
             "or provide its path as an argument."
         )
 

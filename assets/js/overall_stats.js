@@ -79,7 +79,7 @@ async function loadOverallStats() {
     const container = document.getElementById("overall-stats");
 
     try {
-        const response = await fetch("overall_stats.json");
+        const response = await fetch("data/overall_stats.json");
         if (!response.ok) throw new Error("Could not load overall statistics.");
 
         const data = await response.json();

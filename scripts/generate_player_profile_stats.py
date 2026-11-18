@@ -15,8 +15,9 @@ import math
 import sys
 from pathlib import Path
 
-DEFAULT_INPUT = "bingo_races_filtered.json"
-DEFAULT_OUTPUT = "player_profile_stats.json"
+DATA_DIR = Path(__file__).resolve().parent.parent / "data"
+DEFAULT_INPUT = str(DATA_DIR / "bingo_races_filtered.json")
+DEFAULT_OUTPUT = str(DATA_DIR / "player_profile_stats.json")
 
 
 def valid_time(value):

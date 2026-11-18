@@ -139,13 +139,13 @@ if __name__ == "__main__":
 
     parser.add_argument(
         "--input",
-        default="bingo_races_filtered.json",
+        default=str(Path(__file__).resolve().parent.parent / "data" / "bingo_races_filtered.json"),
         help="Input converted race JSON file."
     )
 
     parser.add_argument(
         "--output",
-        default="player_race_data.json",
+        default=str(Path(__file__).resolve().parent.parent / "data" / "player_race_data.json"),
         help="Output compact player race JSON file."
     )
 
