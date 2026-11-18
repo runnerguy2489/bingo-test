@@ -10,8 +10,8 @@ async function loadOverallItemStats() {
 
     const columns = [
         { key: "appearances", label: "Appearances", type: "number", defaultVisible: true },
-        { key: "used", label: "Picked", type: "number", defaultVisible: true },
         { key: "frequency", label: "Frequency", type: "percent", defaultVisible: true },
+        { key: "used", label: "Picked", type: "number", defaultVisible: true },
         { key: "ratio", label: "Ratio", type: "ratio", defaultVisible: true },
         { key: "wins", label: "Wins", type: "number", defaultVisible: true },
         { key: "winPercent", label: "Win%", type: "percent", defaultVisible: true },
