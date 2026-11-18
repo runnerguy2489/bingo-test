@@ -3,7 +3,7 @@ async function loadMonthlyStats() {
     const container = document.getElementById("monthly-stats");
 
     try {
-        const response = await fetch("monthly_race_counts.json");
+        const response = await fetch("data/monthly_race_counts.json");
 
         if (!response.ok) {
             throw new Error("Could not load race data.");

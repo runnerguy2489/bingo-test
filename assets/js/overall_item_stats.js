@@ -533,7 +533,7 @@ async function loadOverallItemStats() {
     }
 
     try {
-        const response = await fetch("overall_item_stats.json");
+        const response = await fetch("data/overall_item_stats.json");
         if (!response.ok) throw new Error("Could not load overall_item_stats.json.");
 
         const data = await response.json();

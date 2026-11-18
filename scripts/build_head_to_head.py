@@ -2,6 +2,10 @@
 import json
 import os
 import argparse
+from pathlib import Path
+
+ROOT_DIR = Path(__file__).resolve().parent.parent
+DATA_DIR = ROOT_DIR / "data"
 
 
 def build_head_to_head(input_file, output_file):
@@ -94,13 +98,13 @@ if __name__ == "__main__":
 
     parser.add_argument(
         "--input",
-        default="bingo_races_filtered.json",
+        default=str(DATA_DIR / "bingo_races_filtered.json"),
         help="Source JSON file"
     )
 
     parser.add_argument(
         "--output",
-        default="head_to_head.json",
+        default=str(DATA_DIR / "head_to_head.json"),
         help="Output JSON file"
     )
 

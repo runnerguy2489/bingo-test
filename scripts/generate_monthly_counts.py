@@ -4,8 +4,8 @@ from collections import Counter
 from datetime import datetime
 from pathlib import Path
 
-# Keep this script in the same folder as bingo_races_fixed.json.
-folder = Path(__file__).resolve().parent
+# Data files live in the repository-level data folder.
+folder = Path(__file__).resolve().parent.parent / "data"
 input_file = folder / "bingo_races_filtered.json"
 output_file = folder / "monthly_race_counts.json"
 

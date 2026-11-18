@@ -273,14 +273,14 @@ if __name__ == "__main__":
     parser.add_argument(
         "input",
         nargs="?",
-        default="bingo_races_filtered.json",
+        default=str(Path(__file__).resolve().parent.parent / "data" / "bingo_races_filtered.json"),
         help="Input race JSON file"
     )
 
     parser.add_argument(
         "output",
         nargs="?",
-        default="overall_stats.json",
+        default=str(Path(__file__).resolve().parent.parent / "data" / "overall_stats.json"),
         help="Output statistics JSON file"
     )
 
