@@ -544,6 +544,10 @@ async function loadOverallItemStats() {
         }
 
         window.itemStatsTargetSeconds = Number(data.underTargetSeconds) || 0;
+        const targetColumn = columns.find(column => column.key === "underTarget");
+        if (targetColumn && window.itemStatsTargetSeconds > 0) {
+            targetColumn.label = "Under " + formatClock(window.itemStatsTargetSeconds);
+        }
         selectedVersions = new Set(getVersionsForSelectedType());
         buildControls();
         refresh();
