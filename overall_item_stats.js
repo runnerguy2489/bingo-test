@@ -10,7 +10,8 @@ async function loadOverallItemStats() {
 
     const columns = [
         { key: "appearances", label: "Appearances", type: "number", defaultVisible: true },
-        { key: "used", label: "Used / Picked", type: "number", defaultVisible: true },
+        { key: "used", label: "Picked", type: "number", defaultVisible: true },
+        { key: "frequency", label: "Frequency", type: "percent", defaultVisible: true },
         { key: "ratio", label: "Ratio", type: "ratio", defaultVisible: true },
         { key: "wins", label: "Wins", type: "number", defaultVisible: true },
         { key: "winPercent", label: "Win%", type: "percent", defaultVisible: true },
@@ -80,6 +81,11 @@ async function loadOverallItemStats() {
     function getValue(item, key) {
         if (key === "ratio") {
             return item.appearances ? item.used / item.appearances : 0;
+        }
+        if (key === "frequency") {
+            return currentSummaryData.boardCount
+                ? item.appearances / currentSummaryData.boardCount * 100
+                : 0;
         }
         if (key === "winPercent") {
             return item.used ? item.wins / item.used * 100 : 0;
@@ -488,7 +494,8 @@ async function loadOverallItemStats() {
             "h2h-table-note",
             "Select a column heading to sort. Select it again to reverse the sort order. " +
             "The table displays 100 items per page. Ratio is Used divided by Appearances; " +
-            "Win% is Wins divided by Used. Under " + targetText +
+            "Win% is Wins divided by Picked; Frequency is Appearances divided by Boards. Under " +
+            (targetSeconds ? targetColumn?.label || targetText : targetText) +
             " counts completed normal-bingo results only."
         );
 
@@ -546,7 +553,12 @@ async function loadOverallItemStats() {
         window.itemStatsTargetSeconds = Number(data.underTargetSeconds) || 0;
         const targetColumn = columns.find(column => column.key === "underTarget");
         if (targetColumn && window.itemStatsTargetSeconds > 0) {
-            targetColumn.label = "Under " + formatClock(window.itemStatsTargetSeconds);
+            const targetMinutes = Math.floor(window.itemStatsTargetSeconds / 60);
+            const targetHours = Math.floor(targetMinutes / 60);
+            const remainingMinutes = targetMinutes % 60;
+            targetColumn.label = "<" + (targetHours > 0
+                ? targetHours + ":" + String(remainingMinutes).padStart(2, "0")
+                : String(targetMinutes));
         }
         selectedVersions = new Set(getVersionsForSelectedType());
         buildControls();
