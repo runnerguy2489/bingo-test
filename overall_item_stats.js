@@ -34,6 +34,7 @@ async function loadOverallItemStats() {
     let currentPage = 1;
     let items = [];
     let currentSummaryData = { raceCount: 0, boardCount: 0 };
+    let underTargetLabel = "Under Target";
 
     const number = value => Number(value || 0).toLocaleString();
     const percent = value => Number(value || 0).toFixed(2) + "%";
@@ -495,7 +496,7 @@ async function loadOverallItemStats() {
             "Select a column heading to sort. Select it again to reverse the sort order. " +
             "The table displays 100 items per page. Ratio is Used divided by Appearances; " +
             "Win% is Wins divided by Picked; Frequency is Appearances divided by Boards. Under " +
-            (targetSeconds ? targetColumn?.label || targetText : targetText) +
+            (targetSeconds ? underTargetLabel : targetText) +
             " counts completed normal-bingo results only."
         );
 
@@ -556,9 +557,10 @@ async function loadOverallItemStats() {
             const targetMinutes = Math.floor(window.itemStatsTargetSeconds / 60);
             const targetHours = Math.floor(targetMinutes / 60);
             const remainingMinutes = targetMinutes % 60;
-            targetColumn.label = "<" + (targetHours > 0
+            underTargetLabel = "<" + (targetHours > 0
                 ? targetHours + ":" + String(remainingMinutes).padStart(2, "0")
                 : String(targetMinutes));
+            targetColumn.label = underTargetLabel;
         }
         selectedVersions = new Set(getVersionsForSelectedType());
         buildControls();
